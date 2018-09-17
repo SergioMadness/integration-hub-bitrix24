@@ -1,0 +1,49 @@
+{
+  "name": "professionalweb/integration-hub-bitrix24",
+  "description": "Bitrix24 module for integration hub",
+  "keywords": [
+    "laravel",
+    "proxy",
+    "integration",
+    "hub",
+    "bitrix24"
+  ],
+  "repositories": [
+    {
+      "type": "path",
+      "url": "/home/user1/projects/php/integration-hub-common",
+      "options": {
+        "symlink": true
+      }
+    }
+  ],
+  "license": "MIT",
+  "type": "library",
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "require": {
+    "php": ">=7.1.3",
+    "professionalweb/integration-hub-common": "*",
+    "mesilov/bitrix24-php-sdk": "*"
+  },
+  "require-dev": {
+  },
+  "autoload": {
+    "classmap": [
+    ],
+    "psr-4": {
+      "professionalweb\\IntegrationHub\\Bitrix24\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "classmap": [
+    ]
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "professionalweb\\IntegrationHub\\Bitrix24\\Providers\\Bitrix24Provider"
+      ]
+    }
+  }
+}
