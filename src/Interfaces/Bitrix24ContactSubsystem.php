@@ -4,5 +4,5 @@ use professionalweb\IntegrationHub\IntegrationHubCommon\Interfaces\Services\Subs
 
 interface Bitrix24ContactSubsystem extends Subsystem
 {
-
+    public const BITRIX24_CONTACT = 'bitrix-contact';
 }

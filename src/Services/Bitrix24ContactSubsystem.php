@@ -28,7 +28,9 @@ class Bitrix24ContactSubsystem extends Bitrix24LeadSubsystem implements IBitrix2
     public function process(EventData $eventData): EventData
     {
         $data = $eventData->getData();
-        $data['contact_id'] = $this->getBitrix24Service()->sendContact($data);
+        $data['contact_id'] = $this->getBitrix24Service()
+            ->setSettings($this->getProcessOptions()->getOptions())
+            ->sendContact($data);
         $eventData->setData($data);
 
         return $eventData;

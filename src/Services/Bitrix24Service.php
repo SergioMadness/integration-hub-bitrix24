@@ -55,11 +55,6 @@ class Bitrix24Service implements IBitrix24Service
     private $messages;
 
     /**
-     * @var bool
-     */
-    private $lastRequestSuccessful = false;
-
-    /**
      * Hook
      *
      * @var string
@@ -79,7 +74,7 @@ class Bitrix24Service implements IBitrix24Service
     /**
      * @param array $data
      *
-     * @return bool
+     * @return int
      * @throws \Bitrix24\Exceptions\Bitrix24ApiException
      * @throws \Bitrix24\Exceptions\Bitrix24EmptyResponseException
      * @throws \Bitrix24\Exceptions\Bitrix24Exception
@@ -92,14 +87,14 @@ class Bitrix24Service implements IBitrix24Service
      * @throws \Bitrix24\Exceptions\Bitrix24WrongClientException
      * @throws \Exception
      */
-    public function sendLead(array $data): bool
+    public function sendLead(array $data): int
     {
         if (empty($fields = Cache::get('fields'))) {
             Cache::put('fields', $fields = $this->call(self::METHOD_LEAD_FIELDS), 60);
         }
 
         if (empty($fields)) {
-            return $this->lastRequestSuccessful = false;
+            throw new Bitrix24Exception('Empty fields');
         }
 
         $data = $this->prepareData($data, $fields);
@@ -108,14 +103,14 @@ class Bitrix24Service implements IBitrix24Service
         if ($validator->fails()) {
             $this->setMessages($validator->errors()->all());
 
-            return $this->lastRequestSuccessful = false;
+            throw new Bitrix24Exception();
         }
 
-        $this->call(self::METHOD_ADD_LEAD, [
+        $result = $this->call(self::METHOD_ADD_LEAD, [
             'fields' => $data,
         ]);
 
-        return $this->lastRequestSuccessful;
+        return $result[0] ?? 0;
     }
 
     /**
@@ -123,7 +118,7 @@ class Bitrix24Service implements IBitrix24Service
      *
      * @param array $data
      *
-     * @return bool
+     * @return int
      * @throws Bitrix24ApiException
      * @throws Bitrix24EmptyResponseException
      * @throws Bitrix24Exception
@@ -135,14 +130,14 @@ class Bitrix24Service implements IBitrix24Service
      * @throws Bitrix24TokenIsInvalidException
      * @throws Bitrix24WrongClientException
      */
-    public function sendContact(array $data): bool
+    public function sendContact(array $data): int
     {
         if (empty($fields = Cache::get('contact-fields'))) {
             Cache::put('contact-fields', $fields = $this->call(self::METHOD_CONTACT_FIELDS), 60);
         }
 
         if (empty($fields)) {
-            return $this->lastRequestSuccessful = false;
+            throw new Bitrix24Exception('Empty contact fields');
         }
 
         $data = $this->prepareData($data, $fields);
@@ -151,14 +146,14 @@ class Bitrix24Service implements IBitrix24Service
         if ($validator->fails()) {
             $this->setMessages($validator->errors()->all());
 
-            return $this->lastRequestSuccessful = false;
+            throw new Bitrix24Exception();
         }
 
-        $this->call(self::METHOD_ADD_CONTACT, [
+        $result = $this->call(self::METHOD_ADD_CONTACT, [
             'fields' => $data,
         ]);
 
-        return $this->lastRequestSuccessful;
+        return $result[0] ?? 0;
     }
 
     /**
@@ -403,7 +398,7 @@ class Bitrix24Service implements IBitrix24Service
      *
      * @return $this
      */
-    public function setSettings(array $settings): CRMService
+    public function setSettings(array $settings): IBitrix24Service
     {
         foreach ($settings as $key => $value) {
             $methodName = 'set' . camel_case($key);

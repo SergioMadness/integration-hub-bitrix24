@@ -59,7 +59,9 @@ class Bitrix24LeadSubsystem implements IBitrix24LeadSubsystem
     public function process(EventData $eventData): EventData
     {
         $data = $eventData->getData();
-        $data['lead_id'] = $this->getBitrix24Service()->sendLead($data);
+        $data['lead_id'] = $this->getBitrix24Service()
+            ->setSettings($this->getProcessOptions()->getOptions())
+            ->sendLead($data);
         $eventData->setData($data);
 
         return $eventData;
