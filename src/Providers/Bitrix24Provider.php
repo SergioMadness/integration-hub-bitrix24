@@ -4,11 +4,10 @@ use Illuminate\Support\ServiceProvider;
 use professionalweb\IntegrationHub\Bitrix24\Services\Bitrix24Service;
 use professionalweb\IntegrationHub\Bitrix24\Services\Bitrix24LeadSubsystem;
 use professionalweb\IntegrationHub\Bitrix24\Services\Bitrix24ContactSubsystem;
-use professionalweb\IntegrationHub\Bitrix24\Bitrix24LeadDistribution\Interfaces\Filter;
+use professionalweb\IntegrationHub\IntegrationHubCommon\Interfaces\Services\Filter;
 use professionalweb\IntegrationHub\Bitrix24\Services\Bitrix24LeadDistributionSubsystem;
 use professionalweb\IntegrationHub\Bitrix24\Bitrix24LeadDistribution\Algorithms\RoundRobin;
 use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24Service as IBitrix24Service;
-use professionalweb\IntegrationHub\Bitrix24\Bitrix24LeadDistribution\Services\UserFilterService;
 use professionalweb\IntegrationHub\Bitrix24\Bitrix24LeadDistribution\Services\DistributionService;
 use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24LeadSubsystem as IBitrix24LeadSubsystem;
 use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24ContactSubsystem as IBitrix24ContactSubsystem;
@@ -31,7 +30,6 @@ class Bitrix24Provider extends ServiceProvider
                 ->setFilter(app(Filter::class))
                 ->setAlgorithm(new RoundRobin());
         });
-        $this->app->singleton(Filter::class, UserFilterService::class);
 
         $this->app->bind(IBitrix24Service::class, Bitrix24Service::class);
         $this->app->bind(IBitrix24LeadSubsystem::class, Bitrix24LeadSubsystem::class);

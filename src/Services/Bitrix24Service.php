@@ -66,6 +66,11 @@ class Bitrix24Service implements IBitrix24Service
      */
     private $rawSettings = [];
 
+    /**
+     * @var bool
+     */
+    private $lastRequestSuccessful;
+
     public function __construct(string $url = '', array $scope = ['crm'])
     {
         $this->setUrl($url)->setScope($scope);

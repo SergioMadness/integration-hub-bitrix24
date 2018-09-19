@@ -1,6 +1,6 @@
 <?php namespace professionalweb\IntegrationHub\Bitrix24\Bitrix24LeadDistribution\Services;
 
-use professionalweb\IntegrationHub\Bitrix24\Bitrix24LeadDistribution\Interfaces\Filter;
+use professionalweb\IntegrationHub\IntegrationHubCommon\Interfaces\Services\Filter;
 use professionalweb\IntegrationHub\Bitrix24\Bitrix24LeadDistribution\Interfaces\DistributionAlgorithm;
 use professionalweb\IntegrationHub\Bitrix24\Bitrix24LeadDistribution\Interfaces\DistributionService as IDistributionService;
 
