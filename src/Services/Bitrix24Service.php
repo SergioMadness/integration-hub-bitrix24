@@ -22,6 +22,7 @@ use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24Service as IBitri
  */
 class Bitrix24Service implements IBitrix24Service
 {
+    //<editor-fold desc="Constants">
     public const TYPE_CRM_MULTIFIELD = 'crm_multifield';
 
     protected const MULTIFIELD_DEFAULT_TYPE = 'HOME';
@@ -33,6 +34,21 @@ class Bitrix24Service implements IBitrix24Service
     protected const METHOD_ADD_LEAD = 'crm.lead.add';
 
     protected const METHOD_ADD_CONTACT = 'crm.contact.add';
+
+    protected const METHOD_START_WORKFLOW = 'bizproc.workflow.start';
+
+    protected const METHOD_DEAL_FIELDS = 'crm.deal.fields';
+
+    protected const METHOD_ADD_DEAL = 'crm.deal.add';
+
+    protected const METHOD_INVOICE_FIELDS = 'crm.invoice.fields';
+
+    protected const METHOD_ADD_INVOICE = 'crm.invoice.add';
+
+    protected const METHOD_CONTACT_SEARCH = 'crm.contact.list';
+
+    protected const METHOD_LEAD_SEARCH = 'crm.lead.list';
+    //</editor-fold>
 
     /**
      * @var string
@@ -159,6 +175,85 @@ class Bitrix24Service implements IBitrix24Service
         ]);
 
         return $result[0] ?? 0;
+    }
+
+    /**
+     * Start workflow for document
+     *
+     * @param        $templateId
+     * @param        $documentId
+     * @param string $documentType
+     *
+     * @return IBitrix24Service
+     * @throws Bitrix24ApiException
+     * @throws Bitrix24EmptyResponseException
+     * @throws Bitrix24Exception
+     * @throws Bitrix24IoException
+     * @throws Bitrix24MethodNotFoundException
+     * @throws Bitrix24PaymentRequiredException
+     * @throws Bitrix24PortalDeletedException
+     * @throws Bitrix24SecurityException
+     * @throws Bitrix24TokenIsInvalidException
+     * @throws Bitrix24WrongClientException
+     */
+    public function startWorkflow($templateId, $documentId, $documentType = IBitrix24Service::DOCUMENT_TYPE_LEAD): IBitrix24Service
+    {
+        $this->call(self::METHOD_START_WORKFLOW, [
+            'TEMPLATE_ID' => $templateId,
+            'DOCUMENT_ID' => ['crm', 'CCrmDocumentLead', $documentId],
+            'PARAMETERS'  => null,
+        ]);
+
+        return $this;
+    }
+
+    /**
+     * Create invoice in CRM
+     *
+     * @param array $data
+     *
+     * @return int
+     * @throws Bitrix24ApiException
+     * @throws Bitrix24EmptyResponseException
+     * @throws Bitrix24Exception
+     * @throws Bitrix24IoException
+     * @throws Bitrix24MethodNotFoundException
+     * @throws Bitrix24PaymentRequiredException
+     * @throws Bitrix24PortalDeletedException
+     * @throws Bitrix24SecurityException
+     * @throws Bitrix24TokenIsInvalidException
+     * @throws Bitrix24WrongClientException
+     */
+    public function sendInvoice(array $data): int
+    {
+//        if (empty($fields = Cache::get('payment-fields'))) {
+//            Cache::put('payment-fields', $fields = $this->call(self::METHOD_DEAL_FIELDS), 60);
+//        }
+//        if (empty($fields)) {
+//            return $this->lastRequestSuccessful = false;
+//        }
+//        $contact = $data['contact'] ?? ($data['CONTACT'] ?? '');
+//        if (!empty($contact) && ($contactId = $this->getContactId($contact)) !== null) {
+//            $data['CONTACT_ID'] = $contactId;
+//        }
+//        if (!empty($contact) && ($leadId = $this->getLeadId($contact)) !== null) {
+//            $data['LEAD_ID'] = $leadId;
+//        }
+//        $d = $data;
+//        $data = $this->prepareData($data, $fields);
+//        $validator = ValidatorFacade::make($data, $this->prepareValidatorRules($fields));
+//        if ($validator->fails()) {
+//            $this->lastRequestSuccessful = false;
+//            $this->setMessages($validator->errors()->all());
+//
+//            return $this->lastRequestSuccessful = false;
+//        }
+//        $result = $this->call(self::METHOD_ADD_DEAL, [
+//            'fields' => $data,
+//        ]);
+////        $d['UF_DEAL_ID'] = $result[0];
+////        $this->sendInvoice($d);
+//        return $this->lastRequestSuccessful;
     }
 
     /**

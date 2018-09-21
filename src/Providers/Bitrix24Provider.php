@@ -3,7 +3,9 @@
 use Illuminate\Support\ServiceProvider;
 use professionalweb\IntegrationHub\Bitrix24\Services\Bitrix24Service;
 use professionalweb\IntegrationHub\Bitrix24\Services\Bitrix24LeadSubsystem;
+use professionalweb\IntegrationHub\Bitrix24\Services\Bitrix24InvoiceSubsystem;
 use professionalweb\IntegrationHub\Bitrix24\Services\Bitrix24ContactSubsystem;
+use professionalweb\IntegrationHub\Bitrix24\Services\Bitrix24WorkflowSubsystem;
 use professionalweb\IntegrationHub\IntegrationHubCommon\Interfaces\Services\Filter;
 use professionalweb\IntegrationHub\Bitrix24\Services\Bitrix24LeadDistributionSubsystem;
 use professionalweb\IntegrationHub\Bitrix24\Bitrix24LeadDistribution\Algorithms\RoundRobin;
@@ -11,6 +13,8 @@ use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24Service as IBitri
 use professionalweb\IntegrationHub\Bitrix24\Bitrix24LeadDistribution\Services\DistributionService;
 use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24LeadSubsystem as IBitrix24LeadSubsystem;
 use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24ContactSubsystem as IBitrix24ContactSubsystem;
+use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24InvoiceSubsystem as IBitrix24InvoiceSubsystem;
+use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24WorkflowSubsystem as IBitrix24WorkflowSubsystem;
 use professionalweb\IntegrationHub\Bitrix24\Bitrix24LeadDistribution\Interfaces\DistributionService as IDistributionService;
 use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24LeadDistributionSubsystem as IBitrix24LeadDistributionSubsystem;
 
@@ -33,7 +37,9 @@ class Bitrix24Provider extends ServiceProvider
 
         $this->app->bind(IBitrix24Service::class, Bitrix24Service::class);
         $this->app->bind(IBitrix24LeadSubsystem::class, Bitrix24LeadSubsystem::class);
+        $this->app->bind(IBitrix24InvoiceSubsystem::class, Bitrix24InvoiceSubsystem::class);
         $this->app->bind(IBitrix24ContactSubsystem::class, Bitrix24ContactSubsystem::class);
+        $this->app->bind(IBitrix24WorkflowSubsystem::class, Bitrix24WorkflowSubsystem::class);
         $this->app->bind(IBitrix24LeadDistributionSubsystem::class, Bitrix24LeadDistributionSubsystem::class);
     }
 }

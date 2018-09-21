@@ -2,6 +2,8 @@
 
 interface Bitrix24Service
 {
+    public const DOCUMENT_TYPE_LEAD = 'lead';
+
     /**
      * Set service settings
      *
@@ -28,4 +30,24 @@ interface Bitrix24Service
      * @return int
      */
     public function sendContact(array $data): int;
+
+    /**
+     * Create invoice in CRM
+     *
+     * @param array $data
+     *
+     * @return int
+     */
+    public function sendInvoice(array $data): int;
+
+    /**
+     * Start workflow for document
+     *
+     * @param        $templateId
+     * @param        $documentId
+     * @param string $documentType
+     *
+     * @return Bitrix24Service
+     */
+    public function startWorkflow($templateId, $documentId, $documentType = self::DOCUMENT_TYPE_LEAD): self;
 }
