@@ -14,6 +14,31 @@ class Bitrix24LeadDistributionOptions extends Bitrix24LeadOptions
      */
     public function getAvailableFields(): array
     {
-        return [];
+        return [
+            'bitrix_manager_id',
+        ];
+    }
+
+    /**
+     * Get service settings
+     *
+     * @return array
+     */
+    public function getOptions(): array
+    {
+        return [
+            'url'    => [
+                'name' => 'Домен',
+                'type' => 'string',
+            ],
+            'hook'   => [
+                'name' => 'Hook',
+                'type' => 'string',
+            ],
+            'filter' => [
+                'name' => 'Настройки фильтра',
+                'type' => 'array',
+            ],
+        ];
     }
 }

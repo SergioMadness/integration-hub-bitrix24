@@ -81,7 +81,7 @@ class DistributionService implements IDistributionService
     {
         if (($alg = $this->getAlgorithm()) !== null) {
             return $alg->getUserId(
-                $this->getFilter()->getUserIds($filter, $params)
+                $this->getFilter()->filter($filter, $params)
             );
         }
 
