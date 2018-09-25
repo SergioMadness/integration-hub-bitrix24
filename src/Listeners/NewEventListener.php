@@ -2,6 +2,8 @@
 
 use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24LeadSubsystem;
 use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24ContactSubsystem;
+use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24WorkflowSubsystem;
+use professionalweb\IntegrationHub\Bitrix24\Services\Bitrix24InvoiceApproveSubsystem;
 use professionalweb\IntegrationHub\IntegrationHubCommon\Interfaces\Services\Subsystem;
 use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24LeadDistributionSubsystem;
 use professionalweb\IntegrationHub\IntegrationHubCommon\Interfaces\Events\EventToProcess;
@@ -24,6 +26,10 @@ class NewEventListener
             case Bitrix24LeadDistributionSubsystem::BITRIX24_LEAD_DISTRIBUTION:
                 /** @var Bitrix24LeadDistributionSubsystem $subsystem */
                 $subsystem = app(Bitrix24LeadDistributionSubsystem::class);
+                break;
+            case Bitrix24WorkflowSubsystem::BITRIX24_WORKFLOW:
+                /** @var Bitrix24WorkflowSubsystem $subsystem */
+                $subsystem = app(Bitrix24WorkflowSubsystem::class);
                 break;
         }
 

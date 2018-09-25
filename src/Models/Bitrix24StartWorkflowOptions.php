@@ -12,7 +12,7 @@ class Bitrix24StartWorkflowOptions extends Bitrix24LeadOptions
     {
         $result = parent::getAvailableFields();
 
-        $result[] = 'document_id';
+        $result['document_id'] = 'document_id';
 
         return $result;
     }

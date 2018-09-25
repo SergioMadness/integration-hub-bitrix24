@@ -14,6 +14,7 @@ use Bitrix24\Exceptions\Bitrix24TokenIsInvalidException;
 use Bitrix24\Exceptions\Bitrix24MethodNotFoundException;
 use Bitrix24\Exceptions\Bitrix24PaymentRequiredException;
 use Illuminate\Support\Facades\Validator as ValidatorFacade;
+use professionalweb\IntegrationHub\IntegrationHubCommon\Exceptions\ProcessException;
 use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24Service as IBitrix24Service;
 
 /**
@@ -64,11 +65,6 @@ class Bitrix24Service implements IBitrix24Service
      * @var Bitrix24
      */
     private $client;
-
-    /**
-     * @var array
-     */
-    private $messages;
 
     /**
      * Hook
@@ -122,9 +118,7 @@ class Bitrix24Service implements IBitrix24Service
 
         $validator = ValidatorFacade::make($data, $this->prepareValidatorRules($fields));
         if ($validator->fails()) {
-            $this->setMessages($validator->errors()->all());
-
-            throw new Bitrix24Exception();
+            throw new ProcessException('', 0, $validator->errors()->toArray());
         }
 
         $result = $this->call(self::METHOD_ADD_LEAD, [
@@ -150,6 +144,7 @@ class Bitrix24Service implements IBitrix24Service
      * @throws Bitrix24SecurityException
      * @throws Bitrix24TokenIsInvalidException
      * @throws Bitrix24WrongClientException
+     * @throws ProcessException
      */
     public function sendContact(array $data): int
     {
@@ -165,9 +160,7 @@ class Bitrix24Service implements IBitrix24Service
 
         $validator = ValidatorFacade::make($data, $this->prepareValidatorRules($fields));
         if ($validator->fails()) {
-            $this->setMessages($validator->errors()->all());
-
-            throw new Bitrix24Exception();
+            throw new ProcessException('', 0, $validator->errors()->toArray());
         }
 
         $result = $this->call(self::METHOD_ADD_CONTACT, [
@@ -368,11 +361,9 @@ class Bitrix24Service implements IBitrix24Service
         $result = [];
         $this->lastRequestSuccessful = true;
         if ($response && isset($response['error']) && !empty($response['error'])) {
-            $this->setMessages((array)$response['error']);
             $this->lastRequestSuccessful = false;
             $result = (array)$response['error'];
         } elseif ($response && isset($response['result'])) {
-            $this->setMessages((array)$response['result']);
             $result = (array)$response['result'];
         } else {
             $this->lastRequestSuccessful = false;
@@ -457,26 +448,6 @@ class Bitrix24Service implements IBitrix24Service
     public function setScope(array $scope): self
     {
         $this->scope = $scope;
-
-        return $this;
-    }
-
-    /**
-     * @return array
-     */
-    public function getMessages(): array
-    {
-        return (array)$this->messages;
-    }
-
-    /**
-     * @param array $messages
-     *
-     * @return $this
-     */
-    public function setMessages(array $messages): self
-    {
-        $this->messages = $messages;
 
         return $this;
     }
