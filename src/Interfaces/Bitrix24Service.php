@@ -50,4 +50,14 @@ interface Bitrix24Service
      * @return Bitrix24Service
      */
     public function startWorkflow($templateId, $documentId, $documentType = self::DOCUMENT_TYPE_LEAD): self;
+
+    /**
+     * Check entity has duplicates
+     *
+     * @param string $contact
+     * @param string $entityType
+     *
+     * @return bool
+     */
+    public function hasDuplicates(string $contact, string $entityType = self::DOCUMENT_TYPE_LEAD): bool;
 }

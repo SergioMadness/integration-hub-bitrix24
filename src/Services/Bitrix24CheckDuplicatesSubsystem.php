@@ -1,15 +1,15 @@
 <?php namespace professionalweb\IntegrationHub\Bitrix24\Services;
 
-use professionalweb\IntegrationHub\Bitrix24\Models\Bitrix24ContactOptions;
 use professionalweb\IntegrationHub\IntegrationHubCommon\Interfaces\EventData;
+use professionalweb\IntegrationHub\Bitrix24\Models\Bitrix24CheckDuplicatesOptions;
 use professionalweb\IntegrationHub\IntegrationHubCommon\Interfaces\Models\SubsystemOptions;
-use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24ContactSubsystem as IBitrix24ContactSubsystem;
+use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24CheckDuplicatesSubsystem as IBitrix24CheckDuplicatesSubsystem;
 
 /**
- * Subsystem to create contact entity in Bitrix24
+ * Subsystem to set status "Duplicate"
  * @package professionalweb\IntegrationHub\Bitrix24\Services
  */
-class Bitrix24ContactSubsystem extends Bitrix24LeadSubsystem implements IBitrix24ContactSubsystem
+class Bitrix24CheckDuplicatesSubsystem extends Bitrix24LeadSubsystem implements IBitrix24CheckDuplicatesSubsystem
 {
 
     /**
@@ -19,7 +19,7 @@ class Bitrix24ContactSubsystem extends Bitrix24LeadSubsystem implements IBitrix2
      */
     public function getAvailableOptions(): SubsystemOptions
     {
-        return new Bitrix24ContactOptions();
+        return new Bitrix24CheckDuplicatesOptions();
     }
 
     /**
@@ -32,11 +32,11 @@ class Bitrix24ContactSubsystem extends Bitrix24LeadSubsystem implements IBitrix2
     public function process(EventData $eventData): EventData
     {
         $data = $eventData->getData();
-        $data['contact_id'] = $this->getBitrix24Service()
-            ->setSettings($this->getProcessOptions()->getOptions())
-            ->sendContact($data);
-        $eventData->setData($data);
 
-        return $eventData;
+        if ($this->getBitrix24Service()->setSettings($this->getProcessOptions()->getOptions())->hasDuplicates($data['contact'])) {
+            $data['STATUS_ID'] = $this->getProcessOptions()->getOptions()['status_id'];
+        }
+
+        return $eventData->setData($data);
     }
 }

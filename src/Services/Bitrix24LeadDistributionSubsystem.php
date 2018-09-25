@@ -8,6 +8,10 @@ use professionalweb\IntegrationHub\IntegrationHubCommon\Interfaces\Models\Subsys
 use professionalweb\IntegrationHub\Bitrix24\Bitrix24LeadDistribution\Interfaces\DistributionService;
 use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24LeadDistributionSubsystem as IBitrix24LeadDistributionSubsystem;
 
+/**
+ * Subsystem to select user to assign lead
+ * @package professionalweb\IntegrationHub\Bitrix24\Services
+ */
 class Bitrix24LeadDistributionSubsystem implements IBitrix24LeadDistributionSubsystem
 {
     /**
@@ -46,11 +50,14 @@ class Bitrix24LeadDistributionSubsystem implements IBitrix24LeadDistributionSubs
     {
         $data = $eventData->getData();
 
-        $data['bitrix_manager_id'] = $this->getDistributionService()
+        $data['assigned_by_id'] = $this->getDistributionService()
             ->getUserId(
-                $this->getProcessOptions()->getOptions()['filter'] ?? [],
+                $this->getProcessOptions()->getOptions()['filter'],
                 $data
             );
+        if (!empty($data['assigned_by_id'])) {
+            $data['status_id'] = $this->getProcessOptions()->getOptions()['status_id'] ?? '';
+        }
 
         return $eventData->setData($data);
     }

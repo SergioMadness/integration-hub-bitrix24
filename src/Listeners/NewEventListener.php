@@ -1,10 +1,11 @@
 <?php namespace professionalweb\IntegrationHub\Bitrix24\Listeners;
 
+
 use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24LeadSubsystem;
 use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24ContactSubsystem;
 use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24WorkflowSubsystem;
-use professionalweb\IntegrationHub\Bitrix24\Services\Bitrix24InvoiceApproveSubsystem;
 use professionalweb\IntegrationHub\IntegrationHubCommon\Interfaces\Services\Subsystem;
+use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24CheckDuplicatesSubsystem;
 use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24LeadDistributionSubsystem;
 use professionalweb\IntegrationHub\IntegrationHubCommon\Interfaces\Events\EventToProcess;
 
@@ -30,6 +31,10 @@ class NewEventListener
             case Bitrix24WorkflowSubsystem::BITRIX24_WORKFLOW:
                 /** @var Bitrix24WorkflowSubsystem $subsystem */
                 $subsystem = app(Bitrix24WorkflowSubsystem::class);
+                break;
+            case Bitrix24CheckDuplicatesSubsystem::BITRIX24_CHECK_DUPLICATES:
+                /** @var Bitrix24CheckDuplicatesSubsystem $subsystem */
+                $subsystem = app(Bitrix24CheckDuplicatesSubsystem::class);
                 break;
         }
 

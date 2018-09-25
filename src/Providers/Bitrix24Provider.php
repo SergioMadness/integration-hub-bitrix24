@@ -1,6 +1,8 @@
 <?php namespace professionalweb\IntegrationHub\Bitrix24\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24CheckDuplicatesSubsystem as IBitrix24CheckDuplicatesSubsystem;
+use professionalweb\IntegrationHub\Bitrix24\Services\Bitrix24CheckDuplicatesSubsystem;
 use professionalweb\IntegrationHub\Bitrix24\Services\Bitrix24Service;
 use professionalweb\IntegrationHub\Bitrix24\Services\Bitrix24LeadSubsystem;
 use professionalweb\IntegrationHub\Bitrix24\Services\Bitrix24InvoiceSubsystem;
@@ -40,6 +42,7 @@ class Bitrix24Provider extends ServiceProvider
         $this->app->bind(IBitrix24InvoiceSubsystem::class, Bitrix24InvoiceSubsystem::class);
         $this->app->bind(IBitrix24ContactSubsystem::class, Bitrix24ContactSubsystem::class);
         $this->app->bind(IBitrix24WorkflowSubsystem::class, Bitrix24WorkflowSubsystem::class);
+        $this->app->bind(IBitrix24CheckDuplicatesSubsystem::class, Bitrix24CheckDuplicatesSubsystem::class);
         $this->app->bind(IBitrix24LeadDistributionSubsystem::class, Bitrix24LeadDistributionSubsystem::class);
     }
 }

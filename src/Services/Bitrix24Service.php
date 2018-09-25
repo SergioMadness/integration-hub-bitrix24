@@ -373,38 +373,24 @@ class Bitrix24Service implements IBitrix24Service
     }
 
     /**
-     * Check
+     * Check document is duplicate
      *
-     * @param array  $data
+     * @param string $contact
      * @param string $entityType
      *
      * @return bool
      */
-    protected function hasDuplicates(array $data, string $entityType = 'LEAD'): bool
+    public function hasDuplicates(string $contact, string $entityType = self::DOCUMENT_TYPE_LEAD): bool
     {
         $result = false;
 
         try {
-            if (isset($data['EMAIL'])) {
-                $checkResult = $this->call('crm.duplicate.findbycomm', [
-                    'type'        => 'EMAIL',
-                    'values'      => array_map(function ($item) {
-                        return $item['VALUE'];
-                    }, $data['EMAIL']),
-                    'entity_type' => $entityType,
-                ]);
-                $result |= !empty($checkResult);
-            }
-            if (isset($data['PHONE'])) {
-                $checkResult = $this->call('crm.duplicate.findbycomm', [
-                    'type'        => 'PHONE',
-                    'values'      => array_map(function ($item) {
-                        return $item['VALUE'];
-                    }, $data['PHONE']),
-                    'entity_type' => $entityType,
-                ]);
-                $result |= !empty($checkResult);
-            }
+            $checkResult = $this->call('crm.duplicate.findbycomm', [
+                'type'        => filter_var($contact, FILTER_VALIDATE_EMAIL) ? 'EMAIL' : 'PHONE',
+                'values'      => [$contact],
+                'entity_type' => $entityType,
+            ]);
+            $result = !empty($checkResult);
         } catch (\Exception $ex) {
 
         }
