@@ -35,7 +35,7 @@ class Bitrix24WorkflowSubsystem extends Bitrix24LeadSubsystem implements IBitrix
 
         $this->getBitrix24Service()
             ->setSettings($options)
-            ->startWorkflow($options['templateId'], $eventData->getData()['document_id']);
+            ->startWorkflow($options['templateId'] ?? '', $eventData->getData()['document_id'] ?? '');
 
         return $eventData;
     }
