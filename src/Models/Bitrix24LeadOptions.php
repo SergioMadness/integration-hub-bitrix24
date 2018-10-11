@@ -40,6 +40,8 @@ class Bitrix24LeadOptions implements SubsystemOptions
             'UTM_MEDIUM'           => 'UTM_MEDIUM',
             'UTM_SOURCE'           => 'UTM_SOURCE',
             'UTM_TERM'             => 'UTM_TERM',
+            'WEB'                  => 'WEB',
+            'PRODUCTS'             => 'PRODUCTS',
         ];
     }
 

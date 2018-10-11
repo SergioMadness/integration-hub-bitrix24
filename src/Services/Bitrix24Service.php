@@ -36,6 +36,8 @@ class Bitrix24Service implements IBitrix24Service
 
     protected const METHOD_ADD_CONTACT = 'crm.contact.add';
 
+    protected const METHOD_ADD_PRODUCTS_TO_LEAD = 'crm.lead.productrows.set';
+
     protected const METHOD_START_WORKFLOW = 'bizproc.workflow.start';
 
     protected const METHOD_DEAL_FIELDS = 'crm.deal.fields';
@@ -125,7 +127,45 @@ class Bitrix24Service implements IBitrix24Service
             'fields' => $data,
         ]);
 
+        if (isset($result[0], $data['PRODUCTS']) && is_array($data['PRODUCTS'])) {
+            $this->sendProducts($result[0], $data['PRODUCTS']);
+        }
+
         return $result[0] ?? 0;
+    }
+
+    /**
+     * Attach products to lead
+     *
+     * @param int   $leadId
+     * @param array $products
+     *
+     * @throws Bitrix24ApiException
+     * @throws Bitrix24EmptyResponseException
+     * @throws Bitrix24Exception
+     * @throws Bitrix24IoException
+     * @throws Bitrix24MethodNotFoundException
+     * @throws Bitrix24PaymentRequiredException
+     * @throws Bitrix24PortalDeletedException
+     * @throws Bitrix24SecurityException
+     * @throws Bitrix24TokenIsInvalidException
+     * @throws Bitrix24WrongClientException
+     */
+    protected function sendProducts(int $leadId, array $products): void
+    {
+        $productsArr = [];
+        foreach ($products as $product) {
+            if (isset($product['price_id'], $product['product_id'])) {
+                $product['quantity'] = (int)$product['quantity'];
+                $productsArr[] = $product;
+            }
+        }
+        if (!empty($productsArr)) {
+            $this->call(self::METHOD_ADD_PRODUCTS_TO_LEAD, [
+                'ID'   => $leadId,
+                'rows' => $productsArr,
+            ]);
+        }
     }
 
     /**
