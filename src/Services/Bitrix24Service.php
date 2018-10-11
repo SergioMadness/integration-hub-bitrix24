@@ -155,9 +155,13 @@ class Bitrix24Service implements IBitrix24Service
     {
         $productsArr = [];
         foreach ($products as $product) {
-            if (isset($product['price_id'], $product['product_id'])) {
-                $product['quantity'] = (int)$product['quantity'];
-                $productsArr[] = $product;
+            if (isset($product['id'], $product['price'])) {
+                $product['quantity'] = (int)($product['qty'] ?? 0);
+                $productsArr[] = [
+                    'PRODUCT_ID' => $product['id'],
+                    'PRICE'      => $product['price'],
+                    'QUANTITY'   => $product['qty'],
+                ];
             }
         }
         if (!empty($productsArr)) {
