@@ -52,7 +52,7 @@ class Bitrix24LeadDistributionSubsystem implements IBitrix24LeadDistributionSubs
 
         $data['assigned_by_id'] = $this->getDistributionService()
             ->getUserId(
-                $this->getProcessOptions()->getOptions()['filter'],
+                $this->getProcessOptions()->getOptions()['filter'] ?? [],
                 $data
             );
         if (!empty($data['assigned_by_id'])) {
