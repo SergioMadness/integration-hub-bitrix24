@@ -41,6 +41,22 @@ interface Bitrix24Service
     public function sendInvoice(array $data): int;
 
     /**
+     * Get invoice by id
+     *
+     * @param int $id
+     *
+     * @return array
+     */
+    public function getInvoice(int $id): array;
+
+    /**
+     * Get currency list
+     *
+     * @return array
+     */
+    public function getCurrencies(): array;
+
+    /**
      * Start workflow for document
      *
      * @param        $templateId
