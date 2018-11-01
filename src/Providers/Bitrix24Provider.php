@@ -8,6 +8,7 @@ use professionalweb\IntegrationHub\Bitrix24\Services\Bitrix24ContactSubsystem;
 use professionalweb\IntegrationHub\Bitrix24\Services\Bitrix24WorkflowSubsystem;
 use professionalweb\IntegrationHub\Bitrix24\Services\Bitrix24GetInvoiceSubsystem;
 use professionalweb\IntegrationHub\IntegrationHubCommon\Interfaces\Services\Filter;
+use professionalweb\IntegrationHub\Bitrix24\Services\Bitrix24UpdateInvoiceSubsystem;
 use professionalweb\IntegrationHub\Bitrix24\Services\Bitrix24CheckDuplicatesSubsystem;
 use professionalweb\IntegrationHub\Bitrix24\Services\Bitrix24ConvertCurrencySubsystem;
 use professionalweb\IntegrationHub\Bitrix24\Services\Bitrix24LeadDistributionSubsystem;
@@ -19,6 +20,7 @@ use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24ContactSubsystem 
 use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24InvoiceSubsystem as IBitrix24InvoiceSubsystem;
 use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24WorkflowSubsystem as IBitrix24WorkflowSubsystem;
 use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24GetInvoiceSubsystem as IBitrix24GetInvoiceSubsystem;
+use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24UpdateInvoiceSubsystem as IBitrix24UpdateInvoiceSubsystem;
 use professionalweb\IntegrationHub\Bitrix24\Bitrix24LeadDistribution\Interfaces\DistributionService as IDistributionService;
 use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24CheckDuplicatesSubsystem as IBitrix24CheckDuplicatesSubsystem;
 use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24ConvertCurrencySubsystem as IBitrix24ConvertCurrencySubsystem;
@@ -47,6 +49,7 @@ class Bitrix24Provider extends ServiceProvider
         $this->app->bind(IBitrix24ContactSubsystem::class, Bitrix24ContactSubsystem::class);
         $this->app->bind(IBitrix24WorkflowSubsystem::class, Bitrix24WorkflowSubsystem::class);
         $this->app->bind(IBitrix24GetInvoiceSubsystem::class, Bitrix24GetInvoiceSubsystem::class);
+        $this->app->bind(IBitrix24UpdateInvoiceSubsystem::class, Bitrix24UpdateInvoiceSubsystem::class);
         $this->app->bind(IBitrix24ConvertCurrencySubsystem::class, Bitrix24ConvertCurrencySubsystem::class);
         $this->app->bind(IBitrix24CheckDuplicatesSubsystem::class, Bitrix24CheckDuplicatesSubsystem::class);
         $this->app->bind(IBitrix24LeadDistributionSubsystem::class, Bitrix24LeadDistributionSubsystem::class);
