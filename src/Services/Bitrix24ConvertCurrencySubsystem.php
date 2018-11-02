@@ -32,18 +32,23 @@ class Bitrix24ConvertCurrencySubsystem extends Bitrix24LeadSubsystem implements 
     {
         $data = $eventData->getData();
         $fromCurrency = strtoupper($data['from_currency'] ?? '');
-        if (!empty($fromCurrency)) {
+        $toCurrency = strtoupper($data['to_currency'] ?? '');
+        if (!empty($fromCurrency) && !empty($toCurrency)) {
             $currencies = $this->getBitrix24Service()
                 ->setSettings($this->getProcessOptions()->getOptions())
                 ->getCurrencies();
             $newAmount = (float)($data['amount'] ?? 0);
+            $fromCurrencyValue = 0;
+            $toCurrencyValue = 0;
             foreach ($currencies as $currency) {
                 if (strtoupper($currency['CURRENCY']) === $fromCurrency) {
-                    $newAmount *= (float)$currency['AMOUNT'];
-                    break;
+                    $fromCurrencyValue = (float)$currency['AMOUNT'];
+                }
+                if (strtoupper($currency['CURRENCY']) === $toCurrency) {
+                    $toCurrencyValue = (float)$currency['AMOUNT'];
                 }
             }
-            $data['base_amount'] = $newAmount;
+            $data['base_amount'] = $newAmount * $toCurrencyValue / $fromCurrencyValue;
             $eventData->setData($data);
         }
 
