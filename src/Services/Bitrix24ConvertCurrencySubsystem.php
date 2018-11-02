@@ -40,6 +40,7 @@ class Bitrix24ConvertCurrencySubsystem extends Bitrix24LeadSubsystem implements 
             foreach ($currencies as $currency) {
                 if (strtoupper($currency['CURRENCY']) === $fromCurrency) {
                     $newAmount *= (float)$currency['AMOUNT'];
+                    break;
                 }
             }
             $data['base_amount'] = $newAmount;
