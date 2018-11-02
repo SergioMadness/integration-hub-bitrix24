@@ -50,6 +50,16 @@ interface Bitrix24Service
     public function getInvoice(int $id): array;
 
     /**
+     * Update invoice
+     *
+     * @param int   $id
+     * @param array $data
+     *
+     * @return bool
+     */
+    public function updateInvoice(int $id, array $data): bool;
+
+    /**
      * Get currency list
      *
      * @return array

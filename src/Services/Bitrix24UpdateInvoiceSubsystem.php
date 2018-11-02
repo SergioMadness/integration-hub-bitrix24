@@ -32,9 +32,11 @@ class Bitrix24UpdateInvoiceSubsystem extends Bitrix24LeadSubsystem implements IB
     {
         $options = $this->getProcessOptions()->getOptions();
 
+        $data = $eventData->getData();
+
         $this->getBitrix24Service()
             ->setSettings($options)
-            ->sendInvoice($eventData->getData());
+            ->updateInvoice($data['id'], $data);
 
         return $eventData;
     }
