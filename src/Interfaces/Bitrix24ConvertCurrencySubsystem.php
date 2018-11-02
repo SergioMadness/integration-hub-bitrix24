@@ -4,5 +4,5 @@ use professionalweb\IntegrationHub\IntegrationHubCommon\Interfaces\Services\Subs
 
 interface Bitrix24ConvertCurrencySubsystem extends Subsystem
 {
-    public const BITRIX24_GET_INVOICE = 'bitrix-convert-currency';
+    public const BITRIX24_CONVERT_CURRENCY = 'bitrix-convert-currency';
 }

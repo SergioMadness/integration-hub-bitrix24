@@ -6,7 +6,7 @@ use professionalweb\IntegrationHub\IntegrationHubCommon\Interfaces\Models\Subsys
 use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24ConvertCurrencySubsystem as IBitrix24ConvertCurrencySubsystem;
 
 /**
- * Class Bitrix24ConvertCurrencySubsystem
+ * Subsystem to convert amount to base currency
  * @package professionalweb\IntegrationHub\Bitrix24\Services
  */
 class Bitrix24ConvertCurrencySubsystem extends Bitrix24LeadSubsystem implements IBitrix24ConvertCurrencySubsystem
@@ -31,11 +31,18 @@ class Bitrix24ConvertCurrencySubsystem extends Bitrix24LeadSubsystem implements 
     public function process(EventData $eventData): EventData
     {
         $data = $eventData->getData();
-        $toCurrency = $this->getProcessOptions()['to_currency'];
-        if (!empty($toCurrency)) {
+        $fromCurrency = strtoupper($data['from_currency'] ?? '');
+        if (!empty($fromCurrency)) {
             $currencies = $this->getBitrix24Service()
                 ->setSettings($this->getProcessOptions()->getOptions())
                 ->getCurrencies();
+            $newAmount = (float)($data['amount'] ?? 0);
+            foreach ($currencies as $currency) {
+                if (strtoupper($currency['CURRENCY']) === $fromCurrency) {
+                    $newAmount *= (float)$currency['AMOUNT'];
+                }
+            }
+            $data['base_amount'] = $newAmount;
             $eventData->setData($data);
         }
 

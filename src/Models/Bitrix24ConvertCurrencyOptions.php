@@ -12,23 +12,7 @@ class Bitrix24ConvertCurrencyOptions extends Bitrix24LeadOptions
     {
         return [
             'from_currency' => 'From currency',
+            'amount'        => 'Amount',
         ];
-    }
-
-    /**
-     * Get service settings
-     *
-     * @return array
-     */
-    public function getOptions(): array
-    {
-        $result = parent::getOptions();
-
-        $result['to_currency'] = [
-            'name' => 'Целевая валюта',
-            'type' => 'string',
-        ];
-
-        return $result;
     }
 }

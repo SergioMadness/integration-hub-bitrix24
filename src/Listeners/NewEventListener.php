@@ -1,8 +1,11 @@
 <?php namespace professionalweb\IntegrationHub\Bitrix24\Listeners;
 
 
+use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24ConvertCurrencySubsystem;
+use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24GetInvoiceSubsystem;
 use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24LeadSubsystem;
 use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24ContactSubsystem;
+use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24UpdateInvoiceSubsystem;
 use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24WorkflowSubsystem;
 use professionalweb\IntegrationHub\IntegrationHubCommon\Interfaces\Services\Subsystem;
 use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24CheckDuplicatesSubsystem;
@@ -35,6 +38,15 @@ class NewEventListener
             case Bitrix24CheckDuplicatesSubsystem::BITRIX24_CHECK_DUPLICATES:
                 /** @var Bitrix24CheckDuplicatesSubsystem $subsystem */
                 $subsystem = app(Bitrix24CheckDuplicatesSubsystem::class);
+                break;
+            case Bitrix24UpdateInvoiceSubsystem::BITRIX24_UPDATE_INVOICE:
+                $subsystem = app(Bitrix24UpdateInvoiceSubsystem::class);
+                break;
+            case Bitrix24ConvertCurrencySubsystem::BITRIX24_CONVERT_CURRENCY:
+                $subsystem = app(Bitrix24ConvertCurrencySubsystem::class);
+                break;
+            case Bitrix24GetInvoiceSubsystem::BITRIX24_GET_INVOICE:
+                $subsystem = app(Bitrix24GetInvoiceSubsystem::class);
                 break;
         }
 

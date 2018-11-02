@@ -4,5 +4,5 @@ use professionalweb\IntegrationHub\IntegrationHubCommon\Interfaces\Services\Subs
 
 interface Bitrix24InvoiceSubsystem extends Subsystem
 {
-    public const BITRIX24_LEAD = 'bitrix-invoice';
+    public const BITRIX24_INVOICE = 'bitrix-invoice';
 }
