@@ -32,10 +32,11 @@ class Bitrix24GetInvoiceSubsystem extends Bitrix24LeadSubsystem implements IBitr
     {
         $data = $eventData->getData();
         if (isset($data['id'])) {
+            $options = $this->getProcessOptions()->getOptions();
             $invoice = $this->getBitrix24Service()
-                ->setSettings($this->getProcessOptions()->getOptions())
+                ->setSettings($options)
                 ->getInvoice($data['id']);
-            $data = array_merge($data, array_intersect_key($invoice, $this->getProcessOptions()['need_fields'] ?? $invoice));
+            $data = array_merge($data, array_intersect_key($invoice, $options['need_fields'] ?? $invoice));
             $eventData->setData($data);
         }
 

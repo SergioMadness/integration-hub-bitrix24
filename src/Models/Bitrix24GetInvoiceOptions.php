@@ -1,45 +1,34 @@
-<?php namespace professionalweb\IntegrationHub\Bitrix24\Services;
+<?php namespace professionalweb\IntegrationHub\Bitrix24\Models;
 
-use professionalweb\IntegrationHub\Bitrix24\Models\Bitrix24GetInvoiceOptions;
-use professionalweb\IntegrationHub\IntegrationHubCommon\Interfaces\EventData;
-use professionalweb\IntegrationHub\IntegrationHubCommon\Interfaces\Models\SubsystemOptions;
-use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24GetInvoiceSubsystem as IBitrix24GetInvoiceSubsystem;
-
-/**
- * Subsystem to get invoice data by id
- * @package professionalweb\IntegrationHub\Bitrix24\Services
- */
-class Bitrix24GetInvoiceSubsystem extends Bitrix24LeadSubsystem implements IBitrix24GetInvoiceSubsystem
+class Bitrix24GetInvoiceOptions extends Bitrix24LeadOptions
 {
+
     /**
-     * Get available options
+     * Get available fields for mapping
      *
-     * @return SubsystemOptions
+     * @return array
      */
-    public function getAvailableOptions(): SubsystemOptions
+    public function getAvailableFields(): array
     {
-        return new Bitrix24GetInvoiceOptions();
+        return [
+            'ID' => 'ID',
+        ];
     }
 
     /**
-     * Process event data
+     * Get service settings
      *
-     * @param EventData $eventData
-     *
-     * @return EventData
+     * @return array
      */
-    public function process(EventData $eventData): EventData
+    public function getOptions(): array
     {
-        $data = $eventData->getData();
-        if (isset($data['id'])) {
-            $options = $this->getProcessOptions()->getOptions();
-            $invoice = $this->getBitrix24Service()
-                ->setSettings($options)
-                ->getInvoice($data['id']);
-            $data = array_merge($data, array_intersect_key($invoice, $options['need_fields'] ?? $invoice));
-            $eventData->setData($data);
-        }
+        $result = parent::getOptions();
 
-        return $eventData;
+        $result['need_fields'] = [
+            'name' => 'Получить параметры',
+            'type' => 'list',
+        ];
+
+        return $result;
     }
 }
