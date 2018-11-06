@@ -1,34 +1,45 @@
-<?php namespace professionalweb\IntegrationHub\Bitrix24\Models;
+<?php namespace professionalweb\IntegrationHub\Bitrix24\Services;
 
-class Bitrix24GetInvoiceOptions extends Bitrix24LeadOptions
+use professionalweb\IntegrationHub\Bitrix24\Models\Bitrix24GetInvoiceOptions;
+use professionalweb\IntegrationHub\IntegrationHubCommon\Interfaces\EventData;
+use professionalweb\IntegrationHub\IntegrationHubCommon\Interfaces\Models\SubsystemOptions;
+use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24GetInvoiceSubsystem as IBitrix24GetInvoiceSubsystem;
+
+/**
+ * Subsystem to get invoice data by id
+ * @package professionalweb\IntegrationHub\Bitrix24\Services
+ */
+class Bitrix24GetInvoiceSubsystem extends Bitrix24LeadSubsystem implements IBitrix24GetInvoiceSubsystem
 {
-
     /**
-     * Get available fields for mapping
+     * Get available options
      *
-     * @return array
+     * @return SubsystemOptions
      */
-    public function getAvailableFields(): array
+    public function getAvailableOptions(): SubsystemOptions
     {
-        return [
-            'ID' => 'ID',
-        ];
+        return new Bitrix24GetInvoiceOptions();
     }
 
     /**
-     * Get service settings
+     * Process event data
      *
-     * @return array
+     * @param EventData $eventData
+     *
+     * @return EventData
      */
-    public function getOptions(): array
+    public function process(EventData $eventData): EventData
     {
-        $result = parent::getOptions();
+        $data = $eventData->getData();
+        if (isset($data['id'])) {
+            $options = $this->getProcessOptions()->getOptions();
+            $invoice = $this->getBitrix24Service()
+                ->setSettings($options)
+                ->getInvoice($data['id']);
+            $data = array_merge($data, array_intersect_key($invoice, $options['need_fields'] ?? $invoice));
+            $eventData->setData($data);
+        }
 
-        $result['need_fields'] = [
-            'name' => 'Получить параметры',
-            'type' => 'list',
-        ];
-
-        return $result;
+        return $eventData;
     }
 }
