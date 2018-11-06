@@ -432,9 +432,11 @@ class Bitrix24Service implements IBitrix24Service
     }
 
     /**
+     * @return Bitrix24
+     *
      * @throws \Bitrix24\Exceptions\Bitrix24Exception
      */
-    protected function getClient()
+    protected function getClient(): Bitrix24
     {
         if ($this->client === null) {
             $this->client = new Bitrix24();

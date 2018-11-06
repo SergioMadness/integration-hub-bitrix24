@@ -1,15 +1,15 @@
 <?php namespace professionalweb\IntegrationHub\Bitrix24\Services;
 
-use professionalweb\IntegrationHub\Bitrix24\Models\Bitrix24InvoiceOptions;
 use professionalweb\IntegrationHub\IntegrationHubCommon\Interfaces\EventData;
+use professionalweb\IntegrationHub\Bitrix24\Models\Bitrix24SetInvoiceStatusOptions;
 use professionalweb\IntegrationHub\IntegrationHubCommon\Interfaces\Models\SubsystemOptions;
-use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24InvoiceSubsystem as IBitrix24InvoiceSubsystem;
+use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24SetInvoiceStatusSubsystem as IBitrix24SetInvoiceStatusSubsystem;
 
 /**
- * Subsystem to set status "approved" to invoice in Bitrix24
+ * Subsystem to set status to invoice
  * @package professionalweb\IntegrationHub\Bitrix24\Services
  */
-class Bitrix24InvoiceApproveSubsystem extends Bitrix24LeadSubsystem implements IBitrix24InvoiceSubsystem
+class Bitrix24SetInvoiceStatusSubsystem extends Bitrix24LeadSubsystem implements IBitrix24SetInvoiceStatusSubsystem
 {
     /**
      * Get available options
@@ -18,7 +18,7 @@ class Bitrix24InvoiceApproveSubsystem extends Bitrix24LeadSubsystem implements I
      */
     public function getAvailableOptions(): SubsystemOptions
     {
-        return new Bitrix24InvoiceOptions();
+        return new Bitrix24SetInvoiceStatusOptions();
     }
 
     /**
@@ -32,9 +32,11 @@ class Bitrix24InvoiceApproveSubsystem extends Bitrix24LeadSubsystem implements I
     {
         $options = $this->getProcessOptions()->getOptions();
 
+        $data = $eventData->getData();
+
         $this->getBitrix24Service()
             ->setSettings($options)
-            ->sendInvoice($eventData->getData());
+            ->updateInvoice($data['id'], ['STATUS_ID' => $options['status'] ?? 'P']);
 
         return $eventData;
     }
