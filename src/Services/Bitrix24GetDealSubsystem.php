@@ -31,12 +31,12 @@ class Bitrix24GetDealSubsystem extends Bitrix24LeadSubsystem implements IBitrix2
     public function process(EventData $eventData): EventData
     {
         $data = $eventData->getData();
-        if (isset($data['id'])) {
+        if (isset($data['deal_id'])) {
             $options = $this->getProcessOptions()->getOptions();
-            $invoice = $this->getBitrix24Service()
+            $deal = $this->getBitrix24Service()
                 ->setSettings($options)
-                ->getDeal($data['id']);
-            $data = array_merge($data, array_intersect_key($invoice, isset($options['need_fields']) ? array_fill_keys($options['need_fields'], 1) : $invoice));
+                ->getDeal($data['deal_id']);
+            $data = array_merge($data, array_intersect_key($deal, isset($options['need_fields']) ? array_fill_keys($options['need_fields'], 1) : $deal));
             $eventData->setData($data);
         }
 

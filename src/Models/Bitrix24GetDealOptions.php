@@ -11,7 +11,7 @@ class Bitrix24GetDealOptions extends Bitrix24LeadOptions
     public function getAvailableFields(): array
     {
         return [
-            'ID' => 'ID',
+            'deal_id' => 'Deal id',
         ];
     }
 
