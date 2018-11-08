@@ -50,6 +50,8 @@ class Bitrix24Service implements IBitrix24Service
 
     protected const METHOD_GET_INVOICE = 'crm.invoice.get';
 
+    protected const METHOD_GET_DEAL = 'crm.deal.get';
+
     protected const METHOD_UPDATE_INVOICE = 'crm.invoice.update';
 
     protected const METHOD_CONTACT_SEARCH = 'crm.contact.list';
@@ -319,6 +321,28 @@ class Bitrix24Service implements IBitrix24Service
     public function getInvoice(int $id): array
     {
         return $this->call(self::METHOD_GET_INVOICE, ['id' => $id]);
+    }
+
+    /**
+     * Get deal by id
+     *
+     * @param int $id
+     *
+     * @return array
+     * @throws Bitrix24ApiException
+     * @throws Bitrix24EmptyResponseException
+     * @throws Bitrix24Exception
+     * @throws Bitrix24IoException
+     * @throws Bitrix24MethodNotFoundException
+     * @throws Bitrix24PaymentRequiredException
+     * @throws Bitrix24PortalDeletedException
+     * @throws Bitrix24SecurityException
+     * @throws Bitrix24TokenIsInvalidException
+     * @throws Bitrix24WrongClientException
+     */
+    public function getDeal(int $id): array
+    {
+        return $this->call(self::METHOD_GET_DEAL, ['id' => $id]);
     }
 
     /**

@@ -3,6 +3,7 @@
 use Illuminate\Support\ServiceProvider;
 use professionalweb\IntegrationHub\Bitrix24\Services\Bitrix24Service;
 use professionalweb\IntegrationHub\Bitrix24\Services\Bitrix24LeadSubsystem;
+use professionalweb\IntegrationHub\Bitrix24\Services\Bitrix24GetDealSubsystem;
 use professionalweb\IntegrationHub\Bitrix24\Services\Bitrix24InvoiceSubsystem;
 use professionalweb\IntegrationHub\Bitrix24\Services\Bitrix24ContactSubsystem;
 use professionalweb\IntegrationHub\Bitrix24\Services\Bitrix24WorkflowSubsystem;
@@ -17,6 +18,7 @@ use professionalweb\IntegrationHub\Bitrix24\Bitrix24LeadDistribution\Algorithms\
 use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24Service as IBitrix24Service;
 use professionalweb\IntegrationHub\Bitrix24\Bitrix24LeadDistribution\Services\DistributionService;
 use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24LeadSubsystem as IBitrix24LeadSubsystem;
+use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24GetDealSubsystem as IBitrix24GetDealSubsystem;
 use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24ContactSubsystem as IBitrix24ContactSubsystem;
 use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24InvoiceSubsystem as IBitrix24InvoiceSubsystem;
 use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24WorkflowSubsystem as IBitrix24WorkflowSubsystem;
@@ -49,6 +51,7 @@ class Bitrix24Provider extends ServiceProvider
         $this->app->bind(IBitrix24LeadSubsystem::class, Bitrix24LeadSubsystem::class);
         $this->app->bind(IBitrix24InvoiceSubsystem::class, Bitrix24InvoiceSubsystem::class);
         $this->app->bind(IBitrix24ContactSubsystem::class, Bitrix24ContactSubsystem::class);
+        $this->app->bind(IBitrix24GetDealSubsystem::class, Bitrix24GetDealSubsystem::class);
         $this->app->bind(IBitrix24WorkflowSubsystem::class, Bitrix24WorkflowSubsystem::class);
         $this->app->bind(IBitrix24GetInvoiceSubsystem::class, Bitrix24GetInvoiceSubsystem::class);
         $this->app->bind(IBitrix24UpdateInvoiceSubsystem::class, Bitrix24UpdateInvoiceSubsystem::class);
