@@ -63,4 +63,16 @@ class Bitrix24LeadOptions implements SubsystemOptions
             ],
         ];
     }
+
+    /**
+     * Get array fields, that subsystem generates
+     *
+     * @return array
+     */
+    public function getAvailableOutFields(): array
+    {
+        return [
+            'lead_id' => 'Lead ID',
+        ];
+    }
 }

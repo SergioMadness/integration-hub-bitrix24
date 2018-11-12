@@ -32,4 +32,14 @@ class Bitrix24SetInvoiceStatusOptions extends Bitrix24LeadOptions
 
         return $result;
     }
+
+    /**
+     * Get array fields, that subsystem generates
+     *
+     * @return array
+     */
+    public function getAvailableOutFields(): array
+    {
+        return [];
+    }
 }

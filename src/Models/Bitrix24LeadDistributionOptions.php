@@ -41,4 +41,14 @@ class Bitrix24LeadDistributionOptions extends Bitrix24LeadOptions
             ],
         ];
     }
+
+    /**
+     * Get array fields, that subsystem generates
+     *
+     * @return array
+     */
+    public function getAvailableOutFields(): array
+    {
+        return [];
+    }
 }

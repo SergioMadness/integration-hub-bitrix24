@@ -36,4 +36,14 @@ class Bitrix24UpdateInvoiceOptions extends Bitrix24LeadOptions
             'PR_LOCATION'      => 'Идентификатор местоположения',
         ];
     }
+
+    /**
+     * Get array fields, that subsystem generates
+     *
+     * @return array
+     */
+    public function getAvailableOutFields(): array
+    {
+        return [];
+    }
 }

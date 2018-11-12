@@ -18,4 +18,14 @@ class Bitrix24CheckDuplicatesOptions extends Bitrix24LeadOptions
             'contact' => 'contact',
         ];
     }
+
+    /**
+     * Get array fields, that subsystem generates
+     *
+     * @return array
+     */
+    public function getAvailableOutFields(): array
+    {
+        return [];
+    }
 }
