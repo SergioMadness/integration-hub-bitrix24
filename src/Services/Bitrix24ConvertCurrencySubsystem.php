@@ -31,7 +31,7 @@ class Bitrix24ConvertCurrencySubsystem extends Bitrix24LeadSubsystem implements 
     public function process(EventData $eventData): EventData
     {
         $data = $eventData->getData();
-        $fromCurrency = strtoupper($data['from_currency'] ?? '');
+        $data['base_amount'] = $fromCurrency = strtoupper($data['from_currency'] ?? '');
         $toCurrency = strtoupper($data['to_currency'] ?? '');
         if (!empty($fromCurrency) && !empty($toCurrency)) {
             $currencies = $this->getBitrix24Service()
