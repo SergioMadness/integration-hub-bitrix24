@@ -394,7 +394,7 @@ class Bitrix24Service implements IBitrix24Service
      */
     public function sendDeal(array $data): array
     {
-        if (empty($fields = Cache::get('fields'))) {
+        if (empty($fields = Cache::get('deal-fields'))) {
             Cache::put('deal-fields', $fields = $this->call(self::METHOD_DEAL_FIELDS), 60);
         }
 

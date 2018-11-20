@@ -4,5 +4,5 @@ use professionalweb\IntegrationHub\IntegrationHubCommon\Interfaces\Services\Subs
 
 interface Bitrix24DealSubsystem extends Subsystem
 {
-    public const BITRIX24_GET_DEAL = 'bitrix-create-deal';
+    public const BITRIX24_CREATE_DEAL = 'bitrix-create-deal';
 }

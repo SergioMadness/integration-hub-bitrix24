@@ -1,6 +1,8 @@
 <?php namespace professionalweb\IntegrationHub\Bitrix24\Listeners;
 
+use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24DealSubsystem;
 use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24LeadSubsystem;
+use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24InvoiceSubsystem;
 use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24GetDealSubsystem;
 use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24ContactSubsystem;
 use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24WorkflowSubsystem;
@@ -54,6 +56,12 @@ class NewEventListener
                 break;
             case Bitrix24GetDealSubsystem::BITRIX24_GET_DEAL:
                 $subsystem = app(Bitrix24GetDealSubsystem::class);
+                break;
+            case Bitrix24DealSubsystem::BITRIX24_CREATE_DEAL:
+                $subsystem = app(Bitrix24DealSubsystem::class);
+                break;
+            case Bitrix24InvoiceSubsystem::BITRIX24_INVOICE:
+                $subsystem = app(Bitrix24InvoiceSubsystem::class);
                 break;
         }
 
