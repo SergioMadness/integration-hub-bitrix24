@@ -44,6 +44,8 @@ class Bitrix24Service implements IBitrix24Service
 
     protected const METHOD_ADD_DEAL = 'crm.deal.add';
 
+    protected const METHOD_ADD_PRODUCTS_TO_DEAL = 'crm.deal.productrows.set';
+
     protected const METHOD_INVOICE_FIELDS = 'crm.invoice.fields';
 
     protected const METHOD_ADD_INVOICE = 'crm.invoice.add';
@@ -124,7 +126,7 @@ class Bitrix24Service implements IBitrix24Service
             throw new Bitrix24Exception('Empty fields');
         }
 
-        $data = $this->prepareData($data, $fields);
+//        $data = $this->prepareData($data, $fields);
 
         $validator = ValidatorFacade::make($data, $this->prepareValidatorRules($fields));
         if ($validator->fails()) {
@@ -136,7 +138,7 @@ class Bitrix24Service implements IBitrix24Service
         ]);
 
         if (isset($result[0], $data['PRODUCTS']) && is_array($data['PRODUCTS'])) {
-            $this->sendProducts($result[0], $data['PRODUCTS']);
+            $this->addProductsToLead($result[0], $data['PRODUCTS']);
         }
 
         return $result[0] ?? 0;
@@ -159,7 +161,7 @@ class Bitrix24Service implements IBitrix24Service
      * @throws Bitrix24TokenIsInvalidException
      * @throws Bitrix24WrongClientException
      */
-    protected function sendProducts(int $leadId, array $products): void
+    protected function addProductsToLead(int $leadId, array $products): void
     {
         $productsArr = [];
         foreach ($products as $product) {
@@ -175,6 +177,44 @@ class Bitrix24Service implements IBitrix24Service
         if (!empty($productsArr)) {
             $this->call(self::METHOD_ADD_PRODUCTS_TO_LEAD, [
                 'ID'   => $leadId,
+                'rows' => $productsArr,
+            ]);
+        }
+    }
+
+    /**
+     * Attach products to deal
+     *
+     * @param int   $dealId
+     * @param array $products
+     *
+     * @throws Bitrix24ApiException
+     * @throws Bitrix24EmptyResponseException
+     * @throws Bitrix24Exception
+     * @throws Bitrix24IoException
+     * @throws Bitrix24MethodNotFoundException
+     * @throws Bitrix24PaymentRequiredException
+     * @throws Bitrix24PortalDeletedException
+     * @throws Bitrix24SecurityException
+     * @throws Bitrix24TokenIsInvalidException
+     * @throws Bitrix24WrongClientException
+     */
+    protected function addProductsToDeal(int $dealId, array $products): void
+    {
+        $productsArr = [];
+        foreach ($products as $product) {
+            if (isset($product['id'], $product['price'])) {
+                $product['quantity'] = (int)($product['qty'] ?? 0);
+                $productsArr[] = [
+                    'PRODUCT_ID' => $product['id'],
+                    'PRICE'      => $product['price'],
+                    'QUANTITY'   => $product['qty'],
+                ];
+            }
+        }
+        if (!empty($productsArr)) {
+            $this->call(self::METHOD_ADD_PRODUCTS_TO_DEAL, [
+                'ID'   => $dealId,
                 'rows' => $productsArr,
             ]);
         }
@@ -208,7 +248,7 @@ class Bitrix24Service implements IBitrix24Service
             throw new Bitrix24Exception('Empty contact fields');
         }
 
-        $data = $this->prepareData($data, $fields);
+//        $data = $this->prepareData($data, $fields);
 
         $validator = ValidatorFacade::make($data, $this->prepareValidatorRules($fields));
         if ($validator->fails()) {
@@ -268,37 +308,26 @@ class Bitrix24Service implements IBitrix24Service
      * @throws Bitrix24SecurityException
      * @throws Bitrix24TokenIsInvalidException
      * @throws Bitrix24WrongClientException
+     * @throws ProcessException
      */
     public function sendInvoice(array $data): int
     {
-//        if (empty($fields = Cache::get('payment-fields'))) {
-//            Cache::put('payment-fields', $fields = $this->call(self::METHOD_DEAL_FIELDS), 60);
-//        }
-//        if (empty($fields)) {
-//            return $this->lastRequestSuccessful = false;
-//        }
-//        $contact = $data['contact'] ?? ($data['CONTACT'] ?? '');
-//        if (!empty($contact) && ($contactId = $this->getContactId($contact)) !== null) {
-//            $data['CONTACT_ID'] = $contactId;
-//        }
-//        if (!empty($contact) && ($leadId = $this->getLeadId($contact)) !== null) {
-//            $data['LEAD_ID'] = $leadId;
-//        }
-//        $d = $data;
+        if (empty($fields = Cache::get('invoice-fields'))) {
+            Cache::put('invoice-fields', $fields = $this->call(self::METHOD_INVOICE_FIELDS), 60);
+        }
+        if (empty($fields)) {
+            throw new Bitrix24Exception('Empty fields');
+        }
 //        $data = $this->prepareData($data, $fields);
-//        $validator = ValidatorFacade::make($data, $this->prepareValidatorRules($fields));
-//        if ($validator->fails()) {
-//            $this->lastRequestSuccessful = false;
-//            $this->setMessages($validator->errors()->all());
-//
-//            return $this->lastRequestSuccessful = false;
-//        }
-//        $result = $this->call(self::METHOD_ADD_DEAL, [
-//            'fields' => $data,
-//        ]);
-////        $d['UF_DEAL_ID'] = $result[0];
-////        $this->sendInvoice($d);
-//        return $this->lastRequestSuccessful;
+        $validator = ValidatorFacade::make($data, $this->prepareValidatorRules($fields));
+        if ($validator->fails()) {
+            throw new ProcessException('', 0, $validator->errors()->toArray());
+        }
+        $result = $this->call(self::METHOD_ADD_INVOICE, [
+            'fields' => $data,
+        ]);
+
+        return $result[0] ?? 0;
     }
 
     /**
@@ -346,6 +375,52 @@ class Bitrix24Service implements IBitrix24Service
     }
 
     /**
+     * Create deal in SendSay
+     *
+     * @param array $data
+     *
+     * @return array
+     * @throws Bitrix24ApiException
+     * @throws Bitrix24EmptyResponseException
+     * @throws Bitrix24Exception
+     * @throws Bitrix24IoException
+     * @throws Bitrix24MethodNotFoundException
+     * @throws Bitrix24PaymentRequiredException
+     * @throws Bitrix24PortalDeletedException
+     * @throws Bitrix24SecurityException
+     * @throws Bitrix24TokenIsInvalidException
+     * @throws Bitrix24WrongClientException
+     * @throws ProcessException
+     */
+    public function sendDeal(array $data): array
+    {
+        if (empty($fields = Cache::get('fields'))) {
+            Cache::put('deal-fields', $fields = $this->call(self::METHOD_DEAL_FIELDS), 60);
+        }
+
+        if (empty($fields)) {
+            throw new Bitrix24Exception('Empty fields');
+        }
+
+//        $data = $this->prepareData($data, $fields);
+
+        $validator = ValidatorFacade::make($data, $this->prepareValidatorRules($fields));
+        if ($validator->fails()) {
+            throw new ProcessException('', 0, $validator->errors()->toArray());
+        }
+
+        $result = $this->call(self::METHOD_ADD_DEAL, [
+            'fields' => $data,
+        ]);
+
+        if (isset($result[0], $data['PRODUCTS']) && is_array($data['PRODUCTS'])) {
+            $this->addProductsToDeal($result[0], $data['PRODUCTS']);
+        }
+
+        return $result[0] ?? 0;
+    }
+
+    /**
      * Update invoice
      *
      * @param int   $id
@@ -390,28 +465,28 @@ class Bitrix24Service implements IBitrix24Service
         return $this->call(self::METHOD_CURRENCY_LIST);
     }
 
-    /**
-     * Prepare data to send
-     *
-     * @param array $data
-     * @param array $fieldInfo
-     *
-     * @return array
-     */
-    protected function prepareData(array $data, array $fieldInfo): array
-    {
-        foreach ($data as $key => $value) {
-            $newKey = mb_strtoupper($key);
-            if (isset($fieldInfo[$newKey])) {
-                $data[$newKey] = isset($fieldInfo[$newKey]) ? $this->formatField($value, $fieldInfo[$newKey]) : $value;
-                if ($key !== $newKey) {
-                    unset($data[$key]);
-                }
-            }
-        }
-
-        return $data;
-    }
+//    /**
+//     * Prepare data to send
+//     *
+//     * @param array $data
+//     * @param array $fieldInfo
+//     *
+//     * @return array
+//     */
+//    protected function prepareData(array $data, array $fieldInfo): array
+//    {
+//        foreach ($data as $key => $value) {
+//            $newKey = mb_strtoupper($key);
+//            if (isset($fieldInfo[$newKey])) {
+//                $data[$newKey] = isset($fieldInfo[$newKey]) ? $this->formatField($value, $fieldInfo[$newKey]) : $value;
+//                if ($key !== $newKey) {
+//                    unset($data[$key]);
+//                }
+//            }
+//        }
+//
+//        return $data;
+//    }
 
     /**
      * @param mixed $data

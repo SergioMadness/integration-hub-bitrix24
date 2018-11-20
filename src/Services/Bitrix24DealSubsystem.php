@@ -1,15 +1,11 @@
 <?php namespace professionalweb\IntegrationHub\Bitrix24\Services;
 
-use professionalweb\IntegrationHub\Bitrix24\Models\Bitrix24InvoiceOptions;
+use professionalweb\IntegrationHub\Bitrix24\Models\Bitrix24DealOptions;
 use professionalweb\IntegrationHub\IntegrationHubCommon\Interfaces\EventData;
 use professionalweb\IntegrationHub\IntegrationHubCommon\Interfaces\Models\SubsystemOptions;
-use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24InvoiceSubsystem as IBitrix24InvoiceSubsystem;
+use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24DealSubsystem as IBitrix24DealSubsystem;
 
-/**
- * Subsystem to create invoice in Bitrix24
- * @package professionalweb\IntegrationHub\Bitrix24\Services
- */
-class Bitrix24InvoiceSubsystem extends Bitrix24LeadSubsystem implements IBitrix24InvoiceSubsystem
+class Bitrix24DealSubsystem extends Bitrix24LeadSubsystem implements IBitrix24DealSubsystem
 {
     /**
      * Get available options
@@ -18,7 +14,7 @@ class Bitrix24InvoiceSubsystem extends Bitrix24LeadSubsystem implements IBitrix2
      */
     public function getAvailableOptions(): SubsystemOptions
     {
-        return new Bitrix24InvoiceOptions();
+        return new Bitrix24DealOptions();
     }
 
     /**
@@ -30,15 +26,12 @@ class Bitrix24InvoiceSubsystem extends Bitrix24LeadSubsystem implements IBitrix2
      */
     public function process(EventData $eventData): EventData
     {
+        $data = $eventData->getData();
         $options = $this->getProcessOptions()->getOptions();
-
-        $invoiceId = $this->getBitrix24Service()
+        $data['deal_id'] = $this->getBitrix24Service()
             ->setSettings($options)
-            ->sendInvoice($eventData->getData());
-
-        $eventData->setData([
-            'invoice_id' => $invoiceId,
-        ]);
+            ->sendLead($data);
+        $eventData->setData($data);
 
         return $eventData;
     }

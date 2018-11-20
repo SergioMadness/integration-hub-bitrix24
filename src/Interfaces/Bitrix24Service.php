@@ -50,6 +50,15 @@ interface Bitrix24Service
     public function getInvoice(int $id): array;
 
     /**
+     * Create deal
+     *
+     * @param array $data
+     *
+     * @return array
+     */
+    public function sendDeal(array $data): array;
+
+    /**
      * Get deal
      *
      * @param int $id

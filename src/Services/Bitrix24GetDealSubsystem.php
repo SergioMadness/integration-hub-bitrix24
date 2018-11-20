@@ -36,8 +36,7 @@ class Bitrix24GetDealSubsystem extends Bitrix24LeadSubsystem implements IBitrix2
             $deal = $this->getBitrix24Service()
                 ->setSettings($options)
                 ->getDeal($data['deal_id']);
-            $data = array_merge($data, array_intersect_key($deal, isset($options['need_fields']) ? array_fill_keys($options['need_fields'], 1) : $deal));
-            $eventData->setData($data);
+            $eventData->setData($deal);
         }
 
         return $eventData;

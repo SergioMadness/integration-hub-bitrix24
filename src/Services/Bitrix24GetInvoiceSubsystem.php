@@ -36,8 +36,7 @@ class Bitrix24GetInvoiceSubsystem extends Bitrix24LeadSubsystem implements IBitr
             $invoice = $this->getBitrix24Service()
                 ->setSettings($options)
                 ->getInvoice($data['id']);
-            $data = array_merge($data, array_intersect_key($invoice, isset($options['need_fields']) ? array_fill_keys($options['need_fields'], 1) : $invoice));
-            $eventData->setData($data);
+            $eventData->setData($invoice);
         }
 
         return $eventData;
