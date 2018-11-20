@@ -28,10 +28,10 @@ class Bitrix24DealSubsystem extends Bitrix24LeadSubsystem implements IBitrix24De
     {
         $data = $eventData->getData();
         $options = $this->getProcessOptions()->getOptions();
-        $data['deal_id'] = $this->getBitrix24Service()
+        $result['deal_id'] = $this->getBitrix24Service()
             ->setSettings($options)
             ->sendDeal($data);
-        $eventData->setData($data);
+        $eventData->setData($result);
 
         return $eventData;
     }

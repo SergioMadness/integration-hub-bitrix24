@@ -56,7 +56,7 @@ interface Bitrix24Service
      *
      * @return array
      */
-    public function sendDeal(array $data): array;
+    public function sendDeal(array $data): int;
 
     /**
      * Get deal

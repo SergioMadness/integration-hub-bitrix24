@@ -170,7 +170,7 @@ class Bitrix24Service implements IBitrix24Service
                 $productsArr[] = [
                     'PRODUCT_ID' => $product['id'],
                     'PRICE'      => $product['price'],
-                    'QUANTITY'   => $product['qty'],
+                    'QUANTITY'   => $product['qty'] ?? 1,
                 ];
             }
         }
@@ -208,7 +208,7 @@ class Bitrix24Service implements IBitrix24Service
                 $productsArr[] = [
                     'PRODUCT_ID' => $product['id'],
                     'PRICE'      => $product['price'],
-                    'QUANTITY'   => $product['qty'],
+                    'QUANTITY'   => $product['qty'] ?? 1,
                 ];
             }
         }
@@ -312,17 +312,17 @@ class Bitrix24Service implements IBitrix24Service
      */
     public function sendInvoice(array $data): int
     {
-        if (empty($fields = Cache::get('invoice-fields'))) {
-            Cache::put('invoice-fields', $fields = $this->call(self::METHOD_INVOICE_FIELDS), 60);
-        }
-        if (empty($fields)) {
-            throw new Bitrix24Exception('Empty fields');
-        }
+//        if (empty($fields = Cache::get('invoice-fields'))) {
+//            Cache::put('invoice-fields', $fields = $this->call(self::METHOD_INVOICE_FIELDS), 60);
+//        }
+//        if (empty($fields)) {
+//            throw new Bitrix24Exception('Empty fields');
+//        }
 //        $data = $this->prepareData($data, $fields);
-        $validator = ValidatorFacade::make($data, $this->prepareValidatorRules($fields));
-        if ($validator->fails()) {
-            throw new ProcessException('', 0, $validator->errors()->toArray());
-        }
+//        $validator = ValidatorFacade::make($data, $this->prepareValidatorRules($fields));
+//        if ($validator->fails()) {
+//            throw new ProcessException('', 0, $validator->errors()->toArray());
+//        }
         $result = $this->call(self::METHOD_ADD_INVOICE, [
             'fields' => $data,
         ]);
@@ -392,7 +392,7 @@ class Bitrix24Service implements IBitrix24Service
      * @throws Bitrix24WrongClientException
      * @throws ProcessException
      */
-    public function sendDeal(array $data): array
+    public function sendDeal(array $data): int
     {
         if (empty($fields = Cache::get('deal-fields'))) {
             Cache::put('deal-fields', $fields = $this->call(self::METHOD_DEAL_FIELDS), 60);
