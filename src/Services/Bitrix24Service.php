@@ -166,7 +166,6 @@ class Bitrix24Service implements IBitrix24Service
         $productsArr = [];
         foreach ($products as $product) {
             if (isset($product['id'], $product['price'])) {
-                $product['quantity'] = (int)($product['qty'] ?? 0);
                 $productsArr[] = [
                     'PRODUCT_ID' => $product['id'],
                     'PRICE'      => $product['price'],
@@ -204,7 +203,6 @@ class Bitrix24Service implements IBitrix24Service
         $productsArr = [];
         foreach ($products as $product) {
             if (isset($product['id'], $product['price'])) {
-                $product['quantity'] = (int)($product['qty'] ?? 0);
                 $productsArr[] = [
                     'PRODUCT_ID' => $product['id'],
                     'PRICE'      => $product['price'],
@@ -214,7 +212,7 @@ class Bitrix24Service implements IBitrix24Service
         }
         if (!empty($productsArr)) {
             $this->call(self::METHOD_ADD_PRODUCTS_TO_DEAL, [
-                'ID'   => $dealId,
+                'id'   => $dealId,
                 'rows' => $productsArr,
             ]);
         }
