@@ -7,6 +7,7 @@ use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24GetDealSubsystem;
 use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24ContactSubsystem;
 use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24WorkflowSubsystem;
 use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24GetInvoiceSubsystem;
+use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24IsUserOnlineSubsystem;
 use professionalweb\IntegrationHub\IntegrationHubCommon\Interfaces\Services\Subsystem;
 use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24UpdateInvoiceSubsystem;
 use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24ConvertCurrencySubsystem;
@@ -62,6 +63,9 @@ class NewEventListener
                 break;
             case Bitrix24InvoiceSubsystem::BITRIX24_INVOICE:
                 $subsystem = app(Bitrix24InvoiceSubsystem::class);
+                break;
+            case Bitrix24IsUserOnlineSubsystem::BITRIX24_GET_EMPLOYEE_STATUS:
+                $subsystem = app(Bitrix24IsUserOnlineSubsystem::class);
                 break;
         }
 

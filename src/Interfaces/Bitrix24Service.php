@@ -104,4 +104,13 @@ interface Bitrix24Service
      * @return bool
      */
     public function hasDuplicates(string $contact, string $entityType = self::DOCUMENT_TYPE_LEAD): bool;
+
+    /**
+     * Check user is online
+     *
+     * @param int $userId
+     *
+     * @return bool
+     */
+    public function isUserOnline(int $userId): bool;
 }

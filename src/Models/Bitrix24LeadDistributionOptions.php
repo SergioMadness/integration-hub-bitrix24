@@ -27,17 +27,21 @@ class Bitrix24LeadDistributionOptions extends Bitrix24LeadOptions
     public function getOptions(): array
     {
         return [
-            'url'    => [
+            'url'         => [
                 'name' => 'Домен',
                 'type' => 'string',
             ],
-            'hook'   => [
+            'hook'        => [
                 'name' => 'Hook',
                 'type' => 'string',
             ],
-            'filter' => [
+            'filter'      => [
                 'name' => 'Настройки фильтра',
                 'type' => 'array',
+            ],
+            'onlY_online' => [
+                'name' => 'Только online',
+                'type' => 'bool',
             ],
         ];
     }
