@@ -113,4 +113,13 @@ interface Bitrix24Service
      * @return bool
      */
     public function isUserOnline(int $userId): bool;
+
+    /**
+     * Filter users by status (active/not active)
+     *
+     * @param array $userIds
+     *
+     * @return array
+     */
+    public function filterOnline(array $userIds): array;
 }

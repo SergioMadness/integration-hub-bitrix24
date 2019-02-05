@@ -63,6 +63,8 @@ class Bitrix24Service implements IBitrix24Service
     protected const METHOD_CURRENCY_LIST = 'crm.currency.list';
 
     protected const METHOD_GET_USER = 'user.get';
+
+    protected const METHOD_SEARCH_USER = 'user.search';
     //</editor-fold>
 
     /**
@@ -635,6 +637,34 @@ class Bitrix24Service implements IBitrix24Service
                 ],
             ]);
             $result = !empty($user);
+        } catch (\Exception $ex) {
+
+        }
+
+        return $result;
+    }
+
+    /**
+     * Filter users by status (active/not active)
+     *
+     * @param array $userIds
+     *
+     * @return array
+     */
+    public function filterOnline(array $userIds): array
+    {
+        $result = false;
+
+        try {
+            $users = $this->call(self::METHOD_SEARCH_USER, [
+                'FILTER' => [
+                    'ID'        => $userIds,
+                    'IS_ONLINE' => 'Y',
+                ],
+            ]);
+            $result = array_map(function ($user) {
+                return $user['ID'];
+            }, $users);
         } catch (\Exception $ex) {
 
         }
