@@ -37,7 +37,7 @@ class Bitrix24IsUserOnlineSubsystem extends Bitrix24LeadSubsystem implements IBi
                 ->setSettings($options)
                 ->isUserOnline($data['user_id']);
             $eventData->setData([
-                $data['user_id'] => $isOnline,
+                'is_user_online' => $isOnline,
             ]);
         }
 
