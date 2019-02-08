@@ -42,10 +42,10 @@ class Bitrix24ConvertCurrencySubsystem extends Bitrix24LeadSubsystem implements 
             $toCurrencyValue = 0;
             foreach ($currencies as $currency) {
                 if (strtoupper($currency['CURRENCY']) === $fromCurrency) {
-                    $fromCurrencyValue = (float)$currency['AMOUNT'];
+                    $fromCurrencyValue = (float)$currency['AMOUNT'] / (float)$currency['AMOUNT_CNT'];
                 }
                 if (strtoupper($currency['CURRENCY']) === $toCurrency) {
-                    $toCurrencyValue = (float)$currency['AMOUNT'];
+                    $toCurrencyValue = (float)$currency['AMOUNT'] / (float)$currency['AMOUNT_CNT'];
                 }
             }
             $data['base_amount'] = $newAmount * $toCurrencyValue / $fromCurrencyValue;
