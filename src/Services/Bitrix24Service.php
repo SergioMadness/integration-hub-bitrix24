@@ -61,6 +61,10 @@ class Bitrix24Service implements IBitrix24Service
     protected const METHOD_LEAD_SEARCH = 'crm.lead.list';
 
     protected const METHOD_CURRENCY_LIST = 'crm.currency.list';
+
+    protected const METHOD_GET_USER = 'user.get';
+
+    protected const METHOD_SEARCH_USER = 'user.search';
     //</editor-fold>
 
     /**
@@ -607,6 +611,60 @@ class Bitrix24Service implements IBitrix24Service
                 'entity_type' => $entityType,
             ]);
             $result = !empty($checkResult);
+        } catch (\Exception $ex) {
+
+        }
+
+        return $result;
+    }
+
+    /**
+     * Check user is online
+     *
+     * @param int $userId
+     *
+     * @return bool
+     */
+    public function isUserOnline(int $userId): bool
+    {
+        $result = false;
+
+        try {
+            $user = $this->call(self::METHOD_GET_USER, [
+                'ID'     => $userId,
+                'FILTER' => [
+                    'IS_ONLINE' => 'Y',
+                ],
+            ]);
+            $result = !empty($user);
+        } catch (\Exception $ex) {
+
+        }
+
+        return $result;
+    }
+
+    /**
+     * Filter users by status (active/not active)
+     *
+     * @param array $userIds
+     *
+     * @return array
+     */
+    public function filterOnline(array $userIds): array
+    {
+        $result = false;
+
+        try {
+            $users = $this->call(self::METHOD_SEARCH_USER, [
+                'FILTER' => [
+                    'ID'        => $userIds,
+                    'IS_ONLINE' => 'Y',
+                ],
+            ]);
+            $result = array_map(function ($user) {
+                return $user['ID'];
+            }, $users);
         } catch (\Exception $ex) {
 
         }

@@ -1,5 +1,6 @@
 <?php namespace professionalweb\IntegrationHub\Bitrix24\Services;
 
+use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24Service;
 use professionalweb\IntegrationHub\IntegrationHubCommon\Interfaces\EventData;
 use professionalweb\IntegrationHub\Bitrix24\Models\Bitrix24LeadDistributionOptions;
 use professionalweb\IntegrationHub\IntegrationHubCommon\Interfaces\Services\Subsystem;
@@ -24,9 +25,14 @@ class Bitrix24LeadDistributionSubsystem implements IBitrix24LeadDistributionSubs
      */
     private $distributionService;
 
-    public function __construct(DistributionService $distributionService)
+    /**
+     * @var Bitrix24Service
+     */
+    private $bitrix24Service;
+
+    public function __construct(DistributionService $distributionService, Bitrix24Service $bitrix24Service)
     {
-        $this->setDistributionService($distributionService);
+        $this->setDistributionService($distributionService)->setBitrix24Service($bitrix24Service);
     }
 
     /**
@@ -49,12 +55,30 @@ class Bitrix24LeadDistributionSubsystem implements IBitrix24LeadDistributionSubs
     public function process(EventData $eventData): EventData
     {
         $data = $eventData->getData();
+        $onlyOnlineUsers = $this->getProcessOptions()->getOptions()['only_online'] ?? false;
+        $firstUserId = 0;
+        $needToStop = false;
 
-        $data['assigned_by_id'] = $this->getDistributionService()
-            ->getUserId(
-                $this->getProcessOptions()->getOptions()['filter'] ?? [],
-                $data
-            );
+        do {
+            $data['assigned_by_id'] = $this->getDistributionService()
+                ->getUserId(
+                    $this->getProcessOptions()->getOptions()['filter'] ?? [],
+                    $data
+                );
+            if (!empty($data['assigned_by_id'])) {
+                if ($onlyOnlineUsers && !$this->getBitrix24Service()->isUserOnline($data['assigned_by_id'])) {
+                    $data['assigned_by_id'] = 0;
+                } else {
+                    $needToStop = true;
+                }
+                if ($firstUserId === 0) {
+                    $firstUserId = $data['assigned_by_id'];
+                }
+            } else {
+                $needToStop = true;
+            }
+        } while (!$needToStop);
+
         if (!empty($data['assigned_by_id'])) {
             $data['status_id'] = $this->getProcessOptions()->getOptions()['status_id'] ?? '';
         }
@@ -100,6 +124,26 @@ class Bitrix24LeadDistributionSubsystem implements IBitrix24LeadDistributionSubs
     public function setDistributionService(DistributionService $distributionService): self
     {
         $this->distributionService = $distributionService;
+
+        return $this;
+    }
+
+    /**
+     * @return Bitrix24Service
+     */
+    public function getBitrix24Service(): Bitrix24Service
+    {
+        return $this->bitrix24Service;
+    }
+
+    /**
+     * @param Bitrix24Service $bitrix24Service
+     *
+     * @return Bitrix24LeadDistributionSubsystem
+     */
+    public function setBitrix24Service(Bitrix24Service $bitrix24Service): self
+    {
+        $this->bitrix24Service = $bitrix24Service;
 
         return $this;
     }
