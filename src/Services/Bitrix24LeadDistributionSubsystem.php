@@ -3,6 +3,7 @@
 use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24Service;
 use professionalweb\IntegrationHub\IntegrationHubCommon\Interfaces\EventData;
 use professionalweb\IntegrationHub\Bitrix24\Models\Bitrix24LeadDistributionOptions;
+use professionalweb\IntegrationHub\IntegrationHubCommon\Interfaces\Services\Filter;
 use professionalweb\IntegrationHub\IntegrationHubCommon\Interfaces\Services\Subsystem;
 use professionalweb\IntegrationHub\IntegrationHubCommon\Interfaces\Models\ProcessOptions;
 use professionalweb\IntegrationHub\IntegrationHubCommon\Interfaces\Models\SubsystemOptions;
@@ -30,9 +31,39 @@ class Bitrix24LeadDistributionSubsystem implements IBitrix24LeadDistributionSubs
      */
     private $bitrix24Service;
 
-    public function __construct(DistributionService $distributionService, Bitrix24Service $bitrix24Service)
+    /**
+     * @var Filter
+     */
+    private $filter;
+
+
+    public function __construct(DistributionService $distributionService, Bitrix24Service $bitrix24Service, Filter $filter)
     {
-        $this->setDistributionService($distributionService)->setBitrix24Service($bitrix24Service);
+        $this->setDistributionService($distributionService)->setBitrix24Service($bitrix24Service)->setFilter($filter);
+    }
+
+    /**
+     * Set service to filter user
+     *
+     * @param Filter $filter
+     *
+     * @return $this
+     */
+    public function setFilter(Filter $filter): self
+    {
+        $this->filter = $filter;
+
+        return $this;
+    }
+
+    /**
+     * Get filter
+     *
+     * @return Filter
+     */
+    public function getFilter(): Filter
+    {
+        return $this->filter;
     }
 
     /**
@@ -58,29 +89,11 @@ class Bitrix24LeadDistributionSubsystem implements IBitrix24LeadDistributionSubs
         $onlyOnlineUsers = $this->getProcessOptions()->getOptions()['only_online'] ?? false;
         $bitrixService = $this->getBitrix24Service();
         $bitrixService->setSettings($this->getProcessOptions()->getOptions());
-        $firstUserId = 0;
-        $needToStop = false;
-        $qty = 0;
-        do {
-            $data['assigned_by_id'] = $this->getDistributionService()
-                ->getUserId(
-                    $this->getProcessOptions()->getOptions()['filter'] ?? [],
-                    $data
-                );
-            if (!empty($data['assigned_by_id'])) {
-                if ($onlyOnlineUsers && !$bitrixService->isUserOnline($data['assigned_by_id'])) {
-                    $data['assigned_by_id'] = 0;
-                } else {
-                    $needToStop = true;
-                }
-                if ($firstUserId === 0) {
-                    $firstUserId = $data['assigned_by_id'];
-                }
-            } else {
-                $needToStop = true;
-            }
-            $qty++;
-        } while ($qty < 100 && !$needToStop);
+        $users = $this->getFilter()->filter($this->getProcessOptions()->getOptions()['filter'] ?? [], $data);
+        if ($onlyOnlineUsers) {
+            $users = $bitrixService->filterOnline($users);
+        }
+        $data['assigned_by_id'] = $this->getDistributionService()->getUserId($users);
 
         if (!empty($data['assigned_by_id'])) {
             $data['status_id'] = $this->getProcessOptions()->getOptions()['status_id'] ?? '';

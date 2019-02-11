@@ -1,6 +1,5 @@
 <?php namespace professionalweb\IntegrationHub\Bitrix24\Bitrix24LeadDistribution\Services;
 
-use professionalweb\IntegrationHub\IntegrationHubCommon\Interfaces\Services\Filter;
 use professionalweb\IntegrationHub\Bitrix24\Bitrix24LeadDistribution\Interfaces\DistributionAlgorithm;
 use professionalweb\IntegrationHub\Bitrix24\Bitrix24LeadDistribution\Interfaces\DistributionService as IDistributionService;
 
@@ -15,35 +14,6 @@ class DistributionService implements IDistributionService
      * @var DistributionAlgorithm
      */
     private $algorithm;
-
-    /**
-     * @var Filter
-     */
-    private $filter;
-
-    /**
-     * Set service to filter user
-     *
-     * @param Filter $filter
-     *
-     * @return $this
-     */
-    public function setFilter(Filter $filter): self
-    {
-        $this->filter = $filter;
-
-        return $this;
-    }
-
-    /**
-     * Get filter
-     *
-     * @return Filter
-     */
-    public function getFilter(): Filter
-    {
-        return $this->filter;
-    }
 
     /**
      * Set selected algorithm
@@ -72,17 +42,14 @@ class DistributionService implements IDistributionService
     /**
      * Get user id
      *
-     * @param array $filter
-     * @param array $params
+     * @param array $users
      *
      * @return mixed
      */
-    public function getUserId(array $filter, array $params)
+    public function getUserId(array $users)
     {
         if (($alg = $this->getAlgorithm()) !== null) {
-            return $alg->getUserId(
-                $this->getFilter()->filter($filter, $params)
-            );
+            return $alg->getUserId($users);
         }
 
         return null;

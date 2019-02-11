@@ -46,9 +46,7 @@ class Bitrix24Provider extends ServiceProvider
         $this->app->register(EventServiceProvider::class);
 
         $this->app->singleton(IDistributionService::class, function () {
-            return (new DistributionService())
-                ->setFilter(app(Filter::class))
-                ->setAlgorithm(new RoundRobin());
+            return (new DistributionService())->setAlgorithm(new RoundRobin());
         });
 
         $this->app->bind(IBitrix24Service::class, Bitrix24Service::class);
