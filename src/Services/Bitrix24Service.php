@@ -631,8 +631,8 @@ class Bitrix24Service implements IBitrix24Service
 
         try {
             $user = $this->call(self::METHOD_GET_USER, [
-                'ID'     => $userId,
                 'FILTER' => [
+                    'ID'        => $userId,
                     'IS_ONLINE' => 'Y',
                 ],
             ]);

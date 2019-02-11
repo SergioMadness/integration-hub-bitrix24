@@ -56,9 +56,11 @@ class Bitrix24LeadDistributionSubsystem implements IBitrix24LeadDistributionSubs
     {
         $data = $eventData->getData();
         $onlyOnlineUsers = $this->getProcessOptions()->getOptions()['only_online'] ?? false;
+        $bitrixService = $this->getBitrix24Service();
+        $bitrixService->setSettings($this->getProcessOptions()->getOptions());
         $firstUserId = 0;
         $needToStop = false;
-
+        $qty = 0;
         do {
             $data['assigned_by_id'] = $this->getDistributionService()
                 ->getUserId(
@@ -66,7 +68,7 @@ class Bitrix24LeadDistributionSubsystem implements IBitrix24LeadDistributionSubs
                     $data
                 );
             if (!empty($data['assigned_by_id'])) {
-                if ($onlyOnlineUsers && !$this->getBitrix24Service()->isUserOnline($data['assigned_by_id'])) {
+                if ($onlyOnlineUsers && !$bitrixService->isUserOnline($data['assigned_by_id'])) {
                     $data['assigned_by_id'] = 0;
                 } else {
                     $needToStop = true;
@@ -77,7 +79,8 @@ class Bitrix24LeadDistributionSubsystem implements IBitrix24LeadDistributionSubs
             } else {
                 $needToStop = true;
             }
-        } while (!$needToStop);
+            $qty++;
+        } while ($qty < 100 && !$needToStop);
 
         if (!empty($data['assigned_by_id'])) {
             $data['status_id'] = $this->getProcessOptions()->getOptions()['status_id'] ?? '';
