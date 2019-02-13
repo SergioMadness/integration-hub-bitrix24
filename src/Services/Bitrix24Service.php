@@ -65,6 +65,8 @@ class Bitrix24Service implements IBitrix24Service
     protected const METHOD_GET_USER = 'user.get';
 
     protected const METHOD_SEARCH_USER = 'user.search';
+
+    protected const METHOD_TIMEMAN_STATUS = 'timeman.status';
     //</editor-fold>
 
     /**
@@ -630,13 +632,10 @@ class Bitrix24Service implements IBitrix24Service
         $result = false;
 
         try {
-            $user = $this->call(self::METHOD_GET_USER, [
-                'FILTER' => [
-                    'ID'        => $userId,
-                    'IS_ONLINE' => 'Y',
-                ],
+            $user = $this->call(self::METHOD_TIMEMAN_STATUS, [
+                'USER_ID' => $userId,
             ]);
-            $result = !empty($user);
+            $result = isset($user['STATUS']) && $user['STATUS'] === 'OPENED';
         } catch (\Exception $ex) {
 
         }
@@ -653,23 +652,11 @@ class Bitrix24Service implements IBitrix24Service
      */
     public function filterOnline(array $userIds): array
     {
-        $result = false;
-
         try {
-            $users = $this->call(self::METHOD_SEARCH_USER, [
-                'FILTER' => [
-                    'ID'        => $userIds,
-                    'IS_ONLINE' => 'Y',
-                ],
-            ]);
-            $result = array_map(function ($user) {
-                return $user['ID'];
-            }, $users);
+            return array_filter($userIds, [$this, 'isUserOnline']);
         } catch (\Exception $ex) {
-
+            return [];
         }
-
-        return $result;
     }
 
     /**
