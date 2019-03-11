@@ -33,7 +33,8 @@ class Bitrix24CheckDuplicatesSubsystem extends Bitrix24LeadSubsystem implements 
     {
         $data = $eventData->getData();
 
-        if ($this->getBitrix24Service()->setSettings($this->getProcessOptions()->getOptions())->hasDuplicates($data['contact'] ?? '')) {
+        if ($this->getBitrix24Service()->setSettings($this->getProcessOptions()->getOptions())->hasDuplicates($data['contact'] ?? '')
+            || (isset($data['contact2']) && $this->getBitrix24Service()->setSettings($this->getProcessOptions()->getOptions())->hasDuplicates($data['contact2'] ?? ''))) {
             $data['STATUS_ID'] = $this->getProcessOptions()->getOptions()['status_id'] ?? '';
         }
 
