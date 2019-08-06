@@ -9,9 +9,10 @@ interface DistributionAlgorithm
     /**
      * Get user id
      *
-     * @param array $ids
+     * @param array  $ids
+     * @param string $group
      *
      * @return mixed
      */
-    public function getUserId(array $ids);
+    public function getUserId(array $ids, string $group = null);
 }

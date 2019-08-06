@@ -90,10 +90,11 @@ class Bitrix24LeadDistributionSubsystem implements IBitrix24LeadDistributionSubs
         $bitrixService = $this->getBitrix24Service();
         $bitrixService->setSettings($this->getProcessOptions()->getOptions());
         $users = $this->getFilter()->filter($this->getProcessOptions()->getOptions()['filter'] ?? [], $data);
+        $usersGroup = md5(implode(',', ksort($users)));
         if ($onlyOnlineUsers) {
             $users = $bitrixService->filterOnline($users);
         }
-        $data['assigned_by_id'] = $this->getDistributionService()->getUserId($users);
+        $data['assigned_by_id'] = $this->getDistributionService()->getUserId($users, $usersGroup);
 
         if (!empty($data['assigned_by_id'])) {
             $data['status_id'] = $this->getProcessOptions()->getOptions()['status_id'] ?? '';

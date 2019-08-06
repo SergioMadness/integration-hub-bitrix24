@@ -50,13 +50,15 @@ class RoundRobin implements DistributionAlgorithm
     /**
      * Get user id
      *
-     * @param array $ids
+     * @param array  $ids
+     *
+     * @param string $group
      *
      * @return mixed
      */
-    public function getUserId(array $ids)
+    public function getUserId(array $ids, string $group = null)
     {
-        $key = md5(implode('', array_sort($ids)));
+        $key = $group ?? md5(implode('', array_sort($ids)));
         $map = $this->getMap($key);
 
         $result = null;
