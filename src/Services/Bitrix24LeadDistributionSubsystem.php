@@ -92,7 +92,7 @@ class Bitrix24LeadDistributionSubsystem implements IBitrix24LeadDistributionSubs
         $bitrixService->setSettings($this->getProcessOptions()->getOptions());
         $users = $this->getFilter()->filter($this->getProcessOptions()->getOptions()['filter'] ?? [], $data);
         $usersGroup = md5(implode('', array_sort($users)));
-        \Log::info('User group', $usersGroup);
+        \Log::info('User group ' . $usersGroup);
         \Log::info('Users by filter', $users);
         if ($onlyOnlineUsers) {
             $users = $bitrixService->filterOnline($users);
