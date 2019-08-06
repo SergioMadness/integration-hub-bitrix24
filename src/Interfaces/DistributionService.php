@@ -9,9 +9,11 @@ interface DistributionService
     /**
      * Get user id
      *
-     * @param array $users
+     * @param array       $users
+     *
+     * @param string|null $group
      *
      * @return mixed
      */
-    public function getUserId(array $users);
+    public function getUserId(array $users, string $group = null);
 }

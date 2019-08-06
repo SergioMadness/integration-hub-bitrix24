@@ -42,14 +42,16 @@ class DistributionService implements IDistributionService
     /**
      * Get user id
      *
-     * @param array $users
+     * @param array       $users
+     *
+     * @param string|null $group
      *
      * @return mixed
      */
-    public function getUserId(array $users)
+    public function getUserId(array $users, string $group = null)
     {
         if (($alg = $this->getAlgorithm()) !== null) {
-            return $alg->getUserId($users);
+            return $alg->getUserId($users, $group);
         }
 
         return null;

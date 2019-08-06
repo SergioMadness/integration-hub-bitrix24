@@ -86,15 +86,22 @@ class Bitrix24LeadDistributionSubsystem implements IBitrix24LeadDistributionSubs
     public function process(EventData $eventData): EventData
     {
         $data = $eventData->getData();
+        \Log::info('------- Distribution', $data);
         $onlyOnlineUsers = $this->getProcessOptions()->getOptions()['only_online'] ?? false;
         $bitrixService = $this->getBitrix24Service();
         $bitrixService->setSettings($this->getProcessOptions()->getOptions());
         $users = $this->getFilter()->filter($this->getProcessOptions()->getOptions()['filter'] ?? [], $data);
-        $usersGroup = md5(implode(',', ksort($users)));
+        $usersGroup = md5(implode('', array_sort($users)));
+        \Log::info('User group', $usersGroup);
+        \Log::info('Users by filter', $users);
         if ($onlyOnlineUsers) {
             $users = $bitrixService->filterOnline($users);
         }
+        $users = array_sort($users);
+        \Log::info('Users online', $users);
         $data['assigned_by_id'] = $this->getDistributionService()->getUserId($users, $usersGroup);
+        \Log::info('Distributed to: ' . $data['assigned_by_id']);
+        \Log::info('------- /Distribution');
 
         if (!empty($data['assigned_by_id'])) {
             $data['status_id'] = $this->getProcessOptions()->getOptions()['status_id'] ?? '';

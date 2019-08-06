@@ -14,5 +14,5 @@ interface DistributionAlgorithm
      *
      * @return mixed
      */
-    public function getUserId(array $ids, string $group = null);
+    public function getUserId(array $ids, ?string $group = null);
 }
