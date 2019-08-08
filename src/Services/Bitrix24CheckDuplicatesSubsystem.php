@@ -1,5 +1,6 @@
 <?php namespace professionalweb\IntegrationHub\Bitrix24\Services;
 
+use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24Service;
 use professionalweb\IntegrationHub\IntegrationHubCommon\Interfaces\EventData;
 use professionalweb\IntegrationHub\Bitrix24\Models\Bitrix24CheckDuplicatesOptions;
 use professionalweb\IntegrationHub\IntegrationHubCommon\Interfaces\Models\SubsystemOptions;
@@ -32,10 +33,17 @@ class Bitrix24CheckDuplicatesSubsystem extends Bitrix24LeadSubsystem implements 
     public function process(EventData $eventData): EventData
     {
         $data = $eventData->getData();
-
-        if ($this->getBitrix24Service()->setSettings($this->getProcessOptions()->getOptions())->hasDuplicates($data['contact'] ?? '')
-            || (isset($data['contact2']) && $this->getBitrix24Service()->setSettings($this->getProcessOptions()->getOptions())->hasDuplicates($data['contact2'] ?? ''))) {
-            $data['STATUS_ID'] = $this->getProcessOptions()->getOptions()['status_id'] ?? '';
+        $contacts = $data['contacts'] ?? [];
+        $options = $this->getProcessOptions()->getOptions();
+        $service = $this->getBitrix24Service()->setSettings($options);
+        $areas = $options['areas'] ?? [Bitrix24Service::DOCUMENT_TYPE_LEAD, Bitrix24Service::DOCUMENT_TYPE_COMPANY, Bitrix24Service::DOCUMENT_TYPE_CONTACT];
+        foreach ($contacts as $contact) {
+            foreach ($areas as $area) {
+                if ($service->hasDuplicates($contact, $area)) {
+                    $data['STATUS_ID'] = $this->getProcessOptions()->getOptions()['status_id'] ?? '';
+                    break;
+                }
+            }
         }
 
         return $eventData->setData($data);

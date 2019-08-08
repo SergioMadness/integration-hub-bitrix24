@@ -4,6 +4,10 @@ interface Bitrix24Service
 {
     public const DOCUMENT_TYPE_LEAD = 'lead';
 
+    public const DOCUMENT_TYPE_CONTACT = 'contact';
+
+    public const DOCUMENT_TYPE_COMPANY = 'company';
+
     /**
      * Set service settings
      *
