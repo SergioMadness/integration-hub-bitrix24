@@ -37,12 +37,17 @@ class Bitrix24CheckDuplicatesSubsystem extends Bitrix24LeadSubsystem implements 
         $options = $this->getProcessOptions()->getOptions();
         $service = $this->getBitrix24Service()->setSettings($options);
         $areas = $options['areas'] ?? [Bitrix24Service::DOCUMENT_TYPE_LEAD, Bitrix24Service::DOCUMENT_TYPE_COMPANY, Bitrix24Service::DOCUMENT_TYPE_CONTACT];
+        $found = false;
         foreach ($contacts as $contact) {
             foreach ($areas as $area) {
                 if ($service->hasDuplicates($contact, $area)) {
                     $data['STATUS_ID'] = $this->getProcessOptions()->getOptions()['status_id'] ?? '';
+                    $found = true;
                     break;
                 }
+            }
+            if ($found) {
+                break;
             }
         }
 
