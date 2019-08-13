@@ -4,5 +4,5 @@ use professionalweb\IntegrationHub\IntegrationHubCommon\Interfaces\Services\Subs
 
 interface Bitrix24LeadDistributionSubsystem extends Subsystem
 {
-
+    public const BITRIX24_LEAD_DISTRIBUTION = 'bitrix-lead-distribution';
 }

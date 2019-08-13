@@ -14,6 +14,7 @@ use Bitrix24\Exceptions\Bitrix24TokenIsInvalidException;
 use Bitrix24\Exceptions\Bitrix24MethodNotFoundException;
 use Bitrix24\Exceptions\Bitrix24PaymentRequiredException;
 use Illuminate\Support\Facades\Validator as ValidatorFacade;
+use professionalweb\IntegrationHub\IntegrationHubCommon\Exceptions\ProcessException;
 use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24Service as IBitrix24Service;
 
 /**
@@ -22,6 +23,7 @@ use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24Service as IBitri
  */
 class Bitrix24Service implements IBitrix24Service
 {
+    //<editor-fold desc="Constants">
     public const TYPE_CRM_MULTIFIELD = 'crm_multifield';
 
     protected const MULTIFIELD_DEFAULT_TYPE = 'HOME';
@@ -33,6 +35,39 @@ class Bitrix24Service implements IBitrix24Service
     protected const METHOD_ADD_LEAD = 'crm.lead.add';
 
     protected const METHOD_ADD_CONTACT = 'crm.contact.add';
+
+    protected const METHOD_ADD_PRODUCTS_TO_LEAD = 'crm.lead.productrows.set';
+
+    protected const METHOD_START_WORKFLOW = 'bizproc.workflow.start';
+
+    protected const METHOD_DEAL_FIELDS = 'crm.deal.fields';
+
+    protected const METHOD_ADD_DEAL = 'crm.deal.add';
+
+    protected const METHOD_ADD_PRODUCTS_TO_DEAL = 'crm.deal.productrows.set';
+
+    protected const METHOD_INVOICE_FIELDS = 'crm.invoice.fields';
+
+    protected const METHOD_ADD_INVOICE = 'crm.invoice.add';
+
+    protected const METHOD_GET_INVOICE = 'crm.invoice.get';
+
+    protected const METHOD_GET_DEAL = 'crm.deal.get';
+
+    protected const METHOD_UPDATE_INVOICE = 'crm.invoice.update';
+
+    protected const METHOD_CONTACT_SEARCH = 'crm.contact.list';
+
+    protected const METHOD_LEAD_SEARCH = 'crm.lead.list';
+
+    protected const METHOD_CURRENCY_LIST = 'crm.currency.list';
+
+    protected const METHOD_GET_USER = 'user.get';
+
+    protected const METHOD_SEARCH_USER = 'user.search';
+
+    protected const METHOD_TIMEMAN_STATUS = 'timeman.status';
+    //</editor-fold>
 
     /**
      * @var string
@@ -50,16 +85,6 @@ class Bitrix24Service implements IBitrix24Service
     private $client;
 
     /**
-     * @var array
-     */
-    private $messages;
-
-    /**
-     * @var bool
-     */
-    private $lastRequestSuccessful = false;
-
-    /**
      * Hook
      *
      * @var string
@@ -71,6 +96,11 @@ class Bitrix24Service implements IBitrix24Service
      */
     private $rawSettings = [];
 
+    /**
+     * @var bool
+     */
+    private $lastRequestSuccessful;
+
     public function __construct(string $url = '', array $scope = ['crm'])
     {
         $this->setUrl($url)->setScope($scope);
@@ -79,7 +109,7 @@ class Bitrix24Service implements IBitrix24Service
     /**
      * @param array $data
      *
-     * @return bool
+     * @return int
      * @throws \Bitrix24\Exceptions\Bitrix24ApiException
      * @throws \Bitrix24\Exceptions\Bitrix24EmptyResponseException
      * @throws \Bitrix24\Exceptions\Bitrix24Exception
@@ -92,35 +122,312 @@ class Bitrix24Service implements IBitrix24Service
      * @throws \Bitrix24\Exceptions\Bitrix24WrongClientException
      * @throws \Exception
      */
-    public function sendLead(array $data): bool
+    public function sendLead(array $data): int
     {
         if (empty($fields = Cache::get('fields'))) {
             Cache::put('fields', $fields = $this->call(self::METHOD_LEAD_FIELDS), 60);
         }
 
         if (empty($fields)) {
-            return $this->lastRequestSuccessful = false;
+            throw new Bitrix24Exception('Empty fields');
         }
 
-        $data = $this->prepareData($data, $fields);
+//        $data = $this->prepareData($data, $fields);
 
         $validator = ValidatorFacade::make($data, $this->prepareValidatorRules($fields));
         if ($validator->fails()) {
-            $this->setMessages($validator->errors()->all());
-
-            return $this->lastRequestSuccessful = false;
+            throw new ProcessException('', 0, $validator->errors()->toArray());
         }
 
-        $this->call(self::METHOD_ADD_LEAD, [
+        $result = $this->call(self::METHOD_ADD_LEAD, [
             'fields' => $data,
         ]);
 
-        return $this->lastRequestSuccessful;
+        if (isset($result[0], $data['PRODUCTS']) && is_array($data['PRODUCTS'])) {
+            $this->addProductsToLead($result[0], $data['PRODUCTS']);
+        }
+
+        return $result[0] ?? 0;
+    }
+
+    /**
+     * Attach products to lead
+     *
+     * @param int   $leadId
+     * @param array $products
+     *
+     * @throws Bitrix24ApiException
+     * @throws Bitrix24EmptyResponseException
+     * @throws Bitrix24Exception
+     * @throws Bitrix24IoException
+     * @throws Bitrix24MethodNotFoundException
+     * @throws Bitrix24PaymentRequiredException
+     * @throws Bitrix24PortalDeletedException
+     * @throws Bitrix24SecurityException
+     * @throws Bitrix24TokenIsInvalidException
+     * @throws Bitrix24WrongClientException
+     */
+    protected function addProductsToLead(int $leadId, array $products): void
+    {
+        $productsArr = [];
+        foreach ($products as $product) {
+            if (isset($product['id'], $product['price'])) {
+                $productsArr[] = [
+                    'PRODUCT_ID' => $product['id'],
+                    'PRICE'      => $product['price'],
+                    'QUANTITY'   => $product['qty'] ?? 1,
+                ];
+            }
+        }
+        if (!empty($productsArr)) {
+            $this->call(self::METHOD_ADD_PRODUCTS_TO_LEAD, [
+                'ID'   => $leadId,
+                'rows' => $productsArr,
+            ]);
+        }
+    }
+
+    /**
+     * Attach products to deal
+     *
+     * @param int   $dealId
+     * @param array $products
+     *
+     * @throws Bitrix24ApiException
+     * @throws Bitrix24EmptyResponseException
+     * @throws Bitrix24Exception
+     * @throws Bitrix24IoException
+     * @throws Bitrix24MethodNotFoundException
+     * @throws Bitrix24PaymentRequiredException
+     * @throws Bitrix24PortalDeletedException
+     * @throws Bitrix24SecurityException
+     * @throws Bitrix24TokenIsInvalidException
+     * @throws Bitrix24WrongClientException
+     */
+    protected function addProductsToDeal(int $dealId, array $products): void
+    {
+        $productsArr = [];
+        foreach ($products as $product) {
+            if (isset($product['id'], $product['price'])) {
+                $productsArr[] = [
+                    'PRODUCT_ID' => $product['id'],
+                    'PRICE'      => $product['price'],
+                    'QUANTITY'   => $product['qty'] ?? 1,
+                ];
+            }
+        }
+        if (!empty($productsArr)) {
+            $this->call(self::METHOD_ADD_PRODUCTS_TO_DEAL, [
+                'id'   => $dealId,
+                'rows' => $productsArr,
+            ]);
+        }
     }
 
     /**
      * Send contact to CRM
      *
+     * @param array $data
+     *
+     * @return int
+     * @throws Bitrix24ApiException
+     * @throws Bitrix24EmptyResponseException
+     * @throws Bitrix24Exception
+     * @throws Bitrix24IoException
+     * @throws Bitrix24MethodNotFoundException
+     * @throws Bitrix24PaymentRequiredException
+     * @throws Bitrix24PortalDeletedException
+     * @throws Bitrix24SecurityException
+     * @throws Bitrix24TokenIsInvalidException
+     * @throws Bitrix24WrongClientException
+     * @throws ProcessException
+     */
+    public function sendContact(array $data): int
+    {
+        if (empty($fields = Cache::get('contact-fields'))) {
+            Cache::put('contact-fields', $fields = $this->call(self::METHOD_CONTACT_FIELDS), 60);
+        }
+
+        if (empty($fields)) {
+            throw new Bitrix24Exception('Empty contact fields');
+        }
+
+//        $data = $this->prepareData($data, $fields);
+
+        $validator = ValidatorFacade::make($data, $this->prepareValidatorRules($fields));
+        if ($validator->fails()) {
+            throw new ProcessException('', 0, $validator->errors()->toArray());
+        }
+
+        $result = $this->call(self::METHOD_ADD_CONTACT, [
+            'fields' => $data,
+        ]);
+
+        return $result[0] ?? 0;
+    }
+
+    /**
+     * Start workflow for document
+     *
+     * @param        $templateId
+     * @param        $documentId
+     * @param string $documentType
+     *
+     * @return IBitrix24Service
+     * @throws Bitrix24ApiException
+     * @throws Bitrix24EmptyResponseException
+     * @throws Bitrix24Exception
+     * @throws Bitrix24IoException
+     * @throws Bitrix24MethodNotFoundException
+     * @throws Bitrix24PaymentRequiredException
+     * @throws Bitrix24PortalDeletedException
+     * @throws Bitrix24SecurityException
+     * @throws Bitrix24TokenIsInvalidException
+     * @throws Bitrix24WrongClientException
+     */
+    public function startWorkflow($templateId, $documentId, $documentType = IBitrix24Service::DOCUMENT_TYPE_LEAD): IBitrix24Service
+    {
+        $this->call(self::METHOD_START_WORKFLOW, [
+            'TEMPLATE_ID' => $templateId,
+            'DOCUMENT_ID' => ['crm', 'CCrmDocumentLead', $documentId],
+            'PARAMETERS'  => null,
+        ]);
+
+        return $this;
+    }
+
+    /**
+     * Create invoice in CRM
+     *
+     * @param array $data
+     *
+     * @return int
+     * @throws Bitrix24ApiException
+     * @throws Bitrix24EmptyResponseException
+     * @throws Bitrix24Exception
+     * @throws Bitrix24IoException
+     * @throws Bitrix24MethodNotFoundException
+     * @throws Bitrix24PaymentRequiredException
+     * @throws Bitrix24PortalDeletedException
+     * @throws Bitrix24SecurityException
+     * @throws Bitrix24TokenIsInvalidException
+     * @throws Bitrix24WrongClientException
+     * @throws ProcessException
+     */
+    public function sendInvoice(array $data): int
+    {
+//        if (empty($fields = Cache::get('invoice-fields'))) {
+//            Cache::put('invoice-fields', $fields = $this->call(self::METHOD_INVOICE_FIELDS), 60);
+//        }
+//        if (empty($fields)) {
+//            throw new Bitrix24Exception('Empty fields');
+//        }
+//        $data = $this->prepareData($data, $fields);
+//        $validator = ValidatorFacade::make($data, $this->prepareValidatorRules($fields));
+//        if ($validator->fails()) {
+//            throw new ProcessException('', 0, $validator->errors()->toArray());
+//        }
+        $result = $this->call(self::METHOD_ADD_INVOICE, [
+            'fields' => $data,
+        ]);
+
+        return $result[0] ?? 0;
+    }
+
+    /**
+     * Get invoice by id
+     *
+     * @param int $id
+     *
+     * @return array
+     * @throws Bitrix24ApiException
+     * @throws Bitrix24EmptyResponseException
+     * @throws Bitrix24Exception
+     * @throws Bitrix24IoException
+     * @throws Bitrix24MethodNotFoundException
+     * @throws Bitrix24PaymentRequiredException
+     * @throws Bitrix24PortalDeletedException
+     * @throws Bitrix24SecurityException
+     * @throws Bitrix24TokenIsInvalidException
+     * @throws Bitrix24WrongClientException
+     */
+    public function getInvoice(int $id): array
+    {
+        return $this->call(self::METHOD_GET_INVOICE, ['id' => $id]);
+    }
+
+    /**
+     * Get deal by id
+     *
+     * @param int $id
+     *
+     * @return array
+     * @throws Bitrix24ApiException
+     * @throws Bitrix24EmptyResponseException
+     * @throws Bitrix24Exception
+     * @throws Bitrix24IoException
+     * @throws Bitrix24MethodNotFoundException
+     * @throws Bitrix24PaymentRequiredException
+     * @throws Bitrix24PortalDeletedException
+     * @throws Bitrix24SecurityException
+     * @throws Bitrix24TokenIsInvalidException
+     * @throws Bitrix24WrongClientException
+     */
+    public function getDeal(int $id): array
+    {
+        return $this->call(self::METHOD_GET_DEAL, ['id' => $id]);
+    }
+
+    /**
+     * Create deal in SendSay
+     *
+     * @param array $data
+     *
+     * @return array
+     * @throws Bitrix24ApiException
+     * @throws Bitrix24EmptyResponseException
+     * @throws Bitrix24Exception
+     * @throws Bitrix24IoException
+     * @throws Bitrix24MethodNotFoundException
+     * @throws Bitrix24PaymentRequiredException
+     * @throws Bitrix24PortalDeletedException
+     * @throws Bitrix24SecurityException
+     * @throws Bitrix24TokenIsInvalidException
+     * @throws Bitrix24WrongClientException
+     * @throws ProcessException
+     */
+    public function sendDeal(array $data): int
+    {
+        if (empty($fields = Cache::get('deal-fields'))) {
+            Cache::put('deal-fields', $fields = $this->call(self::METHOD_DEAL_FIELDS), 60);
+        }
+
+        if (empty($fields)) {
+            throw new Bitrix24Exception('Empty fields');
+        }
+
+//        $data = $this->prepareData($data, $fields);
+
+        $validator = ValidatorFacade::make($data, $this->prepareValidatorRules($fields));
+        if ($validator->fails()) {
+            throw new ProcessException('', 0, $validator->errors()->toArray());
+        }
+
+        $result = $this->call(self::METHOD_ADD_DEAL, [
+            'fields' => $data,
+        ]);
+
+        if (isset($result[0], $data['PRODUCTS']) && is_array($data['PRODUCTS'])) {
+            $this->addProductsToDeal($result[0], $data['PRODUCTS']);
+        }
+
+        return $result[0] ?? 0;
+    }
+
+    /**
+     * Update invoice
+     *
+     * @param int   $id
      * @param array $data
      *
      * @return bool
@@ -135,54 +442,55 @@ class Bitrix24Service implements IBitrix24Service
      * @throws Bitrix24TokenIsInvalidException
      * @throws Bitrix24WrongClientException
      */
-    public function sendContact(array $data): bool
+    public function updateInvoice(int $id, array $data): bool
     {
-        if (empty($fields = Cache::get('contact-fields'))) {
-            Cache::put('contact-fields', $fields = $this->call(self::METHOD_CONTACT_FIELDS), 60);
-        }
+        $this->call(self::METHOD_UPDATE_INVOICE, ['id' => $id, 'fields' => $data]);
 
-        if (empty($fields)) {
-            return $this->lastRequestSuccessful = false;
-        }
-
-        $data = $this->prepareData($data, $fields);
-
-        $validator = ValidatorFacade::make($data, $this->prepareValidatorRules($fields));
-        if ($validator->fails()) {
-            $this->setMessages($validator->errors()->all());
-
-            return $this->lastRequestSuccessful = false;
-        }
-
-        $this->call(self::METHOD_ADD_CONTACT, [
-            'fields' => $data,
-        ]);
-
-        return $this->lastRequestSuccessful;
+        return true;
     }
 
     /**
-     * Prepare data to send
-     *
-     * @param array $data
-     * @param array $fieldInfo
+     * Get currency list
      *
      * @return array
+     * @throws Bitrix24ApiException
+     * @throws Bitrix24EmptyResponseException
+     * @throws Bitrix24Exception
+     * @throws Bitrix24IoException
+     * @throws Bitrix24MethodNotFoundException
+     * @throws Bitrix24PaymentRequiredException
+     * @throws Bitrix24PortalDeletedException
+     * @throws Bitrix24SecurityException
+     * @throws Bitrix24TokenIsInvalidException
+     * @throws Bitrix24WrongClientException
      */
-    protected function prepareData(array $data, array $fieldInfo): array
+    public function getCurrencies(): array
     {
-        foreach ($data as $key => $value) {
-            $newKey = mb_strtoupper($key);
-            if (isset($fieldInfo[$newKey])) {
-                $data[$newKey] = isset($fieldInfo[$newKey]) ? $this->formatField($value, $fieldInfo[$newKey]) : $value;
-                if ($key !== $newKey) {
-                    unset($data[$key]);
-                }
-            }
-        }
-
-        return $data;
+        return $this->call(self::METHOD_CURRENCY_LIST);
     }
+
+//    /**
+//     * Prepare data to send
+//     *
+//     * @param array $data
+//     * @param array $fieldInfo
+//     *
+//     * @return array
+//     */
+//    protected function prepareData(array $data, array $fieldInfo): array
+//    {
+//        foreach ($data as $key => $value) {
+//            $newKey = mb_strtoupper($key);
+//            if (isset($fieldInfo[$newKey])) {
+//                $data[$newKey] = isset($fieldInfo[$newKey]) ? $this->formatField($value, $fieldInfo[$newKey]) : $value;
+//                if ($key !== $newKey) {
+//                    unset($data[$key]);
+//                }
+//            }
+//        }
+//
+//        return $data;
+//    }
 
     /**
      * @param mixed $data
@@ -227,9 +535,11 @@ class Bitrix24Service implements IBitrix24Service
     }
 
     /**
+     * @return Bitrix24
+     *
      * @throws \Bitrix24\Exceptions\Bitrix24Exception
      */
-    protected function getClient()
+    protected function getClient(): Bitrix24
     {
         if ($this->client === null) {
             $this->client = new Bitrix24();
@@ -273,11 +583,9 @@ class Bitrix24Service implements IBitrix24Service
         $result = [];
         $this->lastRequestSuccessful = true;
         if ($response && isset($response['error']) && !empty($response['error'])) {
-            $this->setMessages((array)$response['error']);
             $this->lastRequestSuccessful = false;
             $result = (array)$response['error'];
         } elseif ($response && isset($response['result'])) {
-            $this->setMessages((array)$response['result']);
             $result = (array)$response['result'];
         } else {
             $this->lastRequestSuccessful = false;
@@ -287,43 +595,68 @@ class Bitrix24Service implements IBitrix24Service
     }
 
     /**
-     * Check
+     * Check document is duplicate
      *
-     * @param array  $data
+     * @param string $contact
      * @param string $entityType
      *
      * @return bool
      */
-    protected function hasDuplicates(array $data, string $entityType = 'LEAD'): bool
+    public function hasDuplicates(string $contact, string $entityType = self::DOCUMENT_TYPE_LEAD): bool
     {
         $result = false;
 
         try {
-            if (isset($data['EMAIL'])) {
-                $checkResult = $this->call('crm.duplicate.findbycomm', [
-                    'type'        => 'EMAIL',
-                    'values'      => array_map(function ($item) {
-                        return $item['VALUE'];
-                    }, $data['EMAIL']),
-                    'entity_type' => $entityType,
-                ]);
-                $result |= !empty($checkResult);
-            }
-            if (isset($data['PHONE'])) {
-                $checkResult = $this->call('crm.duplicate.findbycomm', [
-                    'type'        => 'PHONE',
-                    'values'      => array_map(function ($item) {
-                        return $item['VALUE'];
-                    }, $data['PHONE']),
-                    'entity_type' => $entityType,
-                ]);
-                $result |= !empty($checkResult);
-            }
+            $checkResult = $this->call('crm.duplicate.findbycomm', [
+                'type'        => filter_var($contact, FILTER_VALIDATE_EMAIL) ? 'EMAIL' : 'PHONE',
+                'values'      => [$contact],
+                'entity_type' => $entityType,
+            ]);
+            $result = !empty($checkResult);
         } catch (\Exception $ex) {
 
         }
 
         return $result;
+    }
+
+    /**
+     * Check user is online
+     *
+     * @param int $userId
+     *
+     * @return bool
+     */
+    public function isUserOnline(int $userId): bool
+    {
+        $result = false;
+
+        try {
+            $user = $this->call(self::METHOD_TIMEMAN_STATUS, [
+                'USER_ID' => $userId,
+            ]);
+            $result = isset($user['STATUS']) && $user['STATUS'] === 'OPENED';
+        } catch (\Exception $ex) {
+
+        }
+
+        return $result;
+    }
+
+    /**
+     * Filter users by status (active/not active)
+     *
+     * @param array $userIds
+     *
+     * @return array
+     */
+    public function filterOnline(array $userIds): array
+    {
+        try {
+            return array_filter($userIds, [$this, 'isUserOnline']);
+        } catch (\Exception $ex) {
+            return [];
+        }
     }
 
     /**
@@ -367,26 +700,6 @@ class Bitrix24Service implements IBitrix24Service
     }
 
     /**
-     * @return array
-     */
-    public function getMessages(): array
-    {
-        return (array)$this->messages;
-    }
-
-    /**
-     * @param array $messages
-     *
-     * @return $this
-     */
-    public function setMessages(array $messages): self
-    {
-        $this->messages = $messages;
-
-        return $this;
-    }
-
-    /**
      * Check last request was successful
      *
      * @return bool
@@ -403,7 +716,7 @@ class Bitrix24Service implements IBitrix24Service
      *
      * @return $this
      */
-    public function setSettings(array $settings): CRMService
+    public function setSettings(array $settings): IBitrix24Service
     {
         foreach ($settings as $key => $value) {
             $methodName = 'set' . camel_case($key);

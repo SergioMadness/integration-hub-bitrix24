@@ -2,6 +2,12 @@
 
 interface Bitrix24Service
 {
+    public const DOCUMENT_TYPE_LEAD = 'lead';
+
+    public const DOCUMENT_TYPE_CONTACT = 'contact';
+
+    public const DOCUMENT_TYPE_COMPANY = 'company';
+
     /**
      * Set service settings
      *
@@ -10,17 +16,6 @@ interface Bitrix24Service
      * @return Bitrix24Service
      */
     public function setSettings(array $settings): self;
-
-    /**
-     * Get settings by key with dot notation
-     *
-     * @param string $key
-     *
-     * @param mixed  $default
-     *
-     * @return array
-     */
-    public function getSettings(string $key, $default = ''): array;
 
     /**
      * Send lead to CRM
@@ -41,16 +36,94 @@ interface Bitrix24Service
     public function sendContact(array $data): int;
 
     /**
-     * Get response messages/errors
+     * Create invoice in CRM
+     *
+     * @param array $data
+     *
+     * @return int
+     */
+    public function sendInvoice(array $data): int;
+
+    /**
+     * Get invoice by id
+     *
+     * @param int $id
      *
      * @return array
      */
-    public function getMessages(): array;
+    public function getInvoice(int $id): array;
 
     /**
-     * Check last request was successful
+     * Create deal
+     *
+     * @param array $data
+     *
+     * @return array
+     */
+    public function sendDeal(array $data): int;
+
+    /**
+     * Get deal
+     *
+     * @param int $id
+     *
+     * @return array
+     */
+    public function getDeal(int $id): array;
+
+    /**
+     * Update invoice
+     *
+     * @param int   $id
+     * @param array $data
      *
      * @return bool
      */
-    public function isSuccess(): bool;
+    public function updateInvoice(int $id, array $data): bool;
+
+    /**
+     * Get currency list
+     *
+     * @return array
+     */
+    public function getCurrencies(): array;
+
+    /**
+     * Start workflow for document
+     *
+     * @param        $templateId
+     * @param        $documentId
+     * @param string $documentType
+     *
+     * @return Bitrix24Service
+     */
+    public function startWorkflow($templateId, $documentId, $documentType = self::DOCUMENT_TYPE_LEAD): self;
+
+    /**
+     * Check entity has duplicates
+     *
+     * @param string $contact
+     * @param string $entityType
+     *
+     * @return bool
+     */
+    public function hasDuplicates(string $contact, string $entityType = self::DOCUMENT_TYPE_LEAD): bool;
+
+    /**
+     * Check user is online
+     *
+     * @param int $userId
+     *
+     * @return bool
+     */
+    public function isUserOnline(int $userId): bool;
+
+    /**
+     * Filter users by status (active/not active)
+     *
+     * @param array $userIds
+     *
+     * @return array
+     */
+    public function filterOnline(array $userIds): array;
 }

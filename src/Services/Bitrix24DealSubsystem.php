@@ -1,17 +1,12 @@
 <?php namespace professionalweb\IntegrationHub\Bitrix24\Services;
 
-use professionalweb\IntegrationHub\Bitrix24\Models\Bitrix24ContactOptions;
+use professionalweb\IntegrationHub\Bitrix24\Models\Bitrix24DealOptions;
 use professionalweb\IntegrationHub\IntegrationHubCommon\Interfaces\EventData;
 use professionalweb\IntegrationHub\IntegrationHubCommon\Interfaces\Models\SubsystemOptions;
-use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24ContactSubsystem as IBitrix24ContactSubsystem;
+use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24DealSubsystem as IBitrix24DealSubsystem;
 
-/**
- * Subsystem to create contact entity in Bitrix24
- * @package professionalweb\IntegrationHub\Bitrix24\Services
- */
-class Bitrix24ContactSubsystem extends Bitrix24LeadSubsystem implements IBitrix24ContactSubsystem
+class Bitrix24DealSubsystem extends Bitrix24LeadSubsystem implements IBitrix24DealSubsystem
 {
-
     /**
      * Get available options
      *
@@ -19,7 +14,7 @@ class Bitrix24ContactSubsystem extends Bitrix24LeadSubsystem implements IBitrix2
      */
     public function getAvailableOptions(): SubsystemOptions
     {
-        return new Bitrix24ContactOptions();
+        return new Bitrix24DealOptions();
     }
 
     /**
@@ -32,10 +27,11 @@ class Bitrix24ContactSubsystem extends Bitrix24LeadSubsystem implements IBitrix2
     public function process(EventData $eventData): EventData
     {
         $data = $eventData->getData();
-        $data['contact_id'] = $this->getBitrix24Service()
-            ->setSettings($this->getProcessOptions()->getOptions())
-            ->sendContact($data);
-        $eventData->setData($data);
+        $options = $this->getProcessOptions()->getOptions();
+        $result['deal_id'] = $this->getBitrix24Service()
+            ->setSettings($options)
+            ->sendDeal($data);
+        $eventData->setData($result);
 
         return $eventData;
     }

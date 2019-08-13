@@ -2,7 +2,7 @@
 
 use professionalweb\IntegrationHub\IntegrationHubCommon\Interfaces\Services\Subsystem;
 
-interface Bitrix24ContactSubsystem extends Subsystem
+interface Bitrix24IsUserOnlineSubsystem extends Subsystem
 {
-    public const BITRIX24_CONTACT = 'bitrix-contact';
+    public const BITRIX24_GET_EMPLOYEE_STATUS = 'bitrix-get-employee-status';
 }

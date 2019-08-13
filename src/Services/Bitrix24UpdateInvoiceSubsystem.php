@@ -1,17 +1,16 @@
 <?php namespace professionalweb\IntegrationHub\Bitrix24\Services;
 
-use professionalweb\IntegrationHub\Bitrix24\Models\Bitrix24ContactOptions;
 use professionalweb\IntegrationHub\IntegrationHubCommon\Interfaces\EventData;
+use professionalweb\IntegrationHub\Bitrix24\Models\Bitrix24UpdateInvoiceOptions;
 use professionalweb\IntegrationHub\IntegrationHubCommon\Interfaces\Models\SubsystemOptions;
-use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24ContactSubsystem as IBitrix24ContactSubsystem;
+use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24UpdateInvoiceSubsystem as IBitrix24UpdateInvoiceSubsystem;
 
 /**
- * Subsystem to create contact entity in Bitrix24
+ * Subsystem to update invoice
  * @package professionalweb\IntegrationHub\Bitrix24\Services
  */
-class Bitrix24ContactSubsystem extends Bitrix24LeadSubsystem implements IBitrix24ContactSubsystem
+class Bitrix24UpdateInvoiceSubsystem extends Bitrix24LeadSubsystem implements IBitrix24UpdateInvoiceSubsystem
 {
-
     /**
      * Get available options
      *
@@ -19,7 +18,7 @@ class Bitrix24ContactSubsystem extends Bitrix24LeadSubsystem implements IBitrix2
      */
     public function getAvailableOptions(): SubsystemOptions
     {
-        return new Bitrix24ContactOptions();
+        return new Bitrix24UpdateInvoiceOptions();
     }
 
     /**
@@ -31,11 +30,13 @@ class Bitrix24ContactSubsystem extends Bitrix24LeadSubsystem implements IBitrix2
      */
     public function process(EventData $eventData): EventData
     {
+        $options = $this->getProcessOptions()->getOptions();
+
         $data = $eventData->getData();
-        $data['contact_id'] = $this->getBitrix24Service()
-            ->setSettings($this->getProcessOptions()->getOptions())
-            ->sendContact($data);
-        $eventData->setData($data);
+
+        $this->getBitrix24Service()
+            ->setSettings($options)
+            ->updateInvoice($data['id'], $data);
 
         return $eventData;
     }

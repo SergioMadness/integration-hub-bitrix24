@@ -1,17 +1,16 @@
 <?php namespace professionalweb\IntegrationHub\Bitrix24\Services;
 
-use professionalweb\IntegrationHub\Bitrix24\Models\Bitrix24ContactOptions;
+use professionalweb\IntegrationHub\Bitrix24\Models\Bitrix24GetInvoiceOptions;
 use professionalweb\IntegrationHub\IntegrationHubCommon\Interfaces\EventData;
 use professionalweb\IntegrationHub\IntegrationHubCommon\Interfaces\Models\SubsystemOptions;
-use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24ContactSubsystem as IBitrix24ContactSubsystem;
+use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24GetInvoiceSubsystem as IBitrix24GetInvoiceSubsystem;
 
 /**
- * Subsystem to create contact entity in Bitrix24
+ * Subsystem to get invoice data by id
  * @package professionalweb\IntegrationHub\Bitrix24\Services
  */
-class Bitrix24ContactSubsystem extends Bitrix24LeadSubsystem implements IBitrix24ContactSubsystem
+class Bitrix24GetInvoiceSubsystem extends Bitrix24LeadSubsystem implements IBitrix24GetInvoiceSubsystem
 {
-
     /**
      * Get available options
      *
@@ -19,7 +18,7 @@ class Bitrix24ContactSubsystem extends Bitrix24LeadSubsystem implements IBitrix2
      */
     public function getAvailableOptions(): SubsystemOptions
     {
-        return new Bitrix24ContactOptions();
+        return new Bitrix24GetInvoiceOptions();
     }
 
     /**
@@ -32,10 +31,13 @@ class Bitrix24ContactSubsystem extends Bitrix24LeadSubsystem implements IBitrix2
     public function process(EventData $eventData): EventData
     {
         $data = $eventData->getData();
-        $data['contact_id'] = $this->getBitrix24Service()
-            ->setSettings($this->getProcessOptions()->getOptions())
-            ->sendContact($data);
-        $eventData->setData($data);
+        if (isset($data['id'])) {
+            $options = $this->getProcessOptions()->getOptions();
+            $invoice = $this->getBitrix24Service()
+                ->setSettings($options)
+                ->getInvoice($data['id']);
+            $eventData->setData($invoice);
+        }
 
         return $eventData;
     }

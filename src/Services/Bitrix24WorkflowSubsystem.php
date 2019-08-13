@@ -1,15 +1,15 @@
 <?php namespace professionalweb\IntegrationHub\Bitrix24\Services;
 
-use professionalweb\IntegrationHub\Bitrix24\Models\Bitrix24ContactOptions;
 use professionalweb\IntegrationHub\IntegrationHubCommon\Interfaces\EventData;
+use professionalweb\IntegrationHub\Bitrix24\Models\Bitrix24StartWorkflowOptions;
 use professionalweb\IntegrationHub\IntegrationHubCommon\Interfaces\Models\SubsystemOptions;
-use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24ContactSubsystem as IBitrix24ContactSubsystem;
+use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24WorkflowSubsystem as IBitrix24WorkflowSubsystem;
 
 /**
- * Subsystem to create contact entity in Bitrix24
+ * Bitrix24 subsystem to start workflow for document
  * @package professionalweb\IntegrationHub\Bitrix24\Services
  */
-class Bitrix24ContactSubsystem extends Bitrix24LeadSubsystem implements IBitrix24ContactSubsystem
+class Bitrix24WorkflowSubsystem extends Bitrix24LeadSubsystem implements IBitrix24WorkflowSubsystem
 {
 
     /**
@@ -19,7 +19,7 @@ class Bitrix24ContactSubsystem extends Bitrix24LeadSubsystem implements IBitrix2
      */
     public function getAvailableOptions(): SubsystemOptions
     {
-        return new Bitrix24ContactOptions();
+        return new Bitrix24StartWorkflowOptions();
     }
 
     /**
@@ -31,11 +31,11 @@ class Bitrix24ContactSubsystem extends Bitrix24LeadSubsystem implements IBitrix2
      */
     public function process(EventData $eventData): EventData
     {
-        $data = $eventData->getData();
-        $data['contact_id'] = $this->getBitrix24Service()
-            ->setSettings($this->getProcessOptions()->getOptions())
-            ->sendContact($data);
-        $eventData->setData($data);
+        $options = $this->getProcessOptions()->getOptions();
+
+        $this->getBitrix24Service()
+            ->setSettings($options)
+            ->startWorkflow($options['templateId'] ?? '', $eventData->getData()['document_id'] ?? '');
 
         return $eventData;
     }

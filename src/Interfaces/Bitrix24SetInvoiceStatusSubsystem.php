@@ -2,7 +2,7 @@
 
 use professionalweb\IntegrationHub\IntegrationHubCommon\Interfaces\Services\Subsystem;
 
-interface Bitrix24ContactSubsystem extends Subsystem
+interface Bitrix24SetInvoiceStatusSubsystem extends Subsystem
 {
-    public const BITRIX24_CONTACT = 'bitrix-contact';
+    public const BITRIX24_SET_INVOICE_STATUS = 'bitrix-set-invoice-status';
 }
