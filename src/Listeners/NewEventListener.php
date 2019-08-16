@@ -2,6 +2,7 @@
 
 use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24DealSubsystem;
 use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24LeadSubsystem;
+use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24GetLeadSubsystem;
 use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24InvoiceSubsystem;
 use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24GetDealSubsystem;
 use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24ContactSubsystem;
@@ -66,6 +67,9 @@ class NewEventListener
                 break;
             case Bitrix24IsUserOnlineSubsystem::BITRIX24_GET_EMPLOYEE_STATUS:
                 $subsystem = app(Bitrix24IsUserOnlineSubsystem::class);
+                break;
+            case Bitrix24GetLeadSubsystem::BITRIX24_GET_LEAD:
+                $subsystem = app(Bitrix24GetLeadSubsystem::class);
                 break;
         }
 

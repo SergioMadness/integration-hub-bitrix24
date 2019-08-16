@@ -27,6 +27,15 @@ interface Bitrix24Service
     public function sendLead(array $data): int;
 
     /**
+     * Get lead info by id
+     *
+     * @param int $id
+     *
+     * @return array
+     */
+    public function getLead(int $id): array;
+
+    /**
      * Send contact to CRM
      *
      * @param array $data

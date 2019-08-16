@@ -34,6 +34,8 @@ class Bitrix24Service implements IBitrix24Service
 
     protected const METHOD_ADD_LEAD = 'crm.lead.add';
 
+    protected const METHOD_GET_LEAD = 'crm.lead.get';
+
     protected const METHOD_ADD_CONTACT = 'crm.contact.add';
 
     protected const METHOD_ADD_PRODUCTS_TO_LEAD = 'crm.lead.productrows.set';
@@ -764,5 +766,27 @@ class Bitrix24Service implements IBitrix24Service
     public function getSettings(string $key, $default = ''): array
     {
         return Arr::get($this->rawSettings, $key, $default);
+    }
+
+    /**
+     * Get lead info by id
+     *
+     * @param int $id
+     *
+     * @return array
+     * @throws Bitrix24ApiException
+     * @throws Bitrix24EmptyResponseException
+     * @throws Bitrix24Exception
+     * @throws Bitrix24IoException
+     * @throws Bitrix24MethodNotFoundException
+     * @throws Bitrix24PaymentRequiredException
+     * @throws Bitrix24PortalDeletedException
+     * @throws Bitrix24SecurityException
+     * @throws Bitrix24TokenIsInvalidException
+     * @throws Bitrix24WrongClientException
+     */
+    public function getLead(int $id): array
+    {
+        return $this->call(self::METHOD_GET_LEAD, ['id' => $id]);
     }
 }
