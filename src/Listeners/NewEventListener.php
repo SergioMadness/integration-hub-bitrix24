@@ -8,6 +8,7 @@ use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24GetDealSubsystem;
 use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24ContactSubsystem;
 use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24WorkflowSubsystem;
 use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24GetInvoiceSubsystem;
+use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24SearchLeadSubsystem;
 use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24IsUserOnlineSubsystem;
 use professionalweb\IntegrationHub\IntegrationHubCommon\Interfaces\Services\Subsystem;
 use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24UpdateInvoiceSubsystem;
@@ -45,31 +46,44 @@ class NewEventListener
                 $subsystem = app(Bitrix24CheckDuplicatesSubsystem::class);
                 break;
             case Bitrix24UpdateInvoiceSubsystem::BITRIX24_UPDATE_INVOICE:
+                /** @var Bitrix24UpdateInvoiceSubsystem $subsystem */
                 $subsystem = app(Bitrix24UpdateInvoiceSubsystem::class);
                 break;
             case Bitrix24ConvertCurrencySubsystem::BITRIX24_CONVERT_CURRENCY:
+                /** @var Bitrix24ConvertCurrencySubsystem $subsystem */
                 $subsystem = app(Bitrix24ConvertCurrencySubsystem::class);
                 break;
             case Bitrix24GetInvoiceSubsystem::BITRIX24_GET_INVOICE:
+                /** @var Bitrix24GetInvoiceSubsystem $subsystem */
                 $subsystem = app(Bitrix24GetInvoiceSubsystem::class);
                 break;
             case Bitrix24SetInvoiceStatusSubsystem::BITRIX24_SET_INVOICE_STATUS:
+                /** @var Bitrix24SetInvoiceStatusSubsystem $subsystem */
                 $subsystem = app(Bitrix24SetInvoiceStatusSubsystem::class);
                 break;
             case Bitrix24GetDealSubsystem::BITRIX24_GET_DEAL:
+                /** @var Bitrix24GetDealSubsystem $subsystem */
                 $subsystem = app(Bitrix24GetDealSubsystem::class);
                 break;
             case Bitrix24DealSubsystem::BITRIX24_CREATE_DEAL:
+                /** @var Bitrix24DealSubsystem $subsystem */
                 $subsystem = app(Bitrix24DealSubsystem::class);
                 break;
             case Bitrix24InvoiceSubsystem::BITRIX24_INVOICE:
+                /** @var Bitrix24InvoiceSubsystem $subsystem */
                 $subsystem = app(Bitrix24InvoiceSubsystem::class);
                 break;
             case Bitrix24IsUserOnlineSubsystem::BITRIX24_GET_EMPLOYEE_STATUS:
+                /** @var Bitrix24IsUserOnlineSubsystem $subsystem */
                 $subsystem = app(Bitrix24IsUserOnlineSubsystem::class);
                 break;
             case Bitrix24GetLeadSubsystem::BITRIX24_GET_LEAD:
+                /** @var Bitrix24GetLeadSubsystem $subsystem */
                 $subsystem = app(Bitrix24GetLeadSubsystem::class);
+                break;
+            case Bitrix24SearchLeadSubsystem::BITRIX24_SEARCH_LEAD:
+                /** @var Bitrix24SearchLeadSubsystem $subsystem */
+                $subsystem = app(Bitrix24SearchLeadSubsystem::class);
                 break;
         }
 

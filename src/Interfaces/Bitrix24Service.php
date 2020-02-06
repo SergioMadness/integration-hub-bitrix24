@@ -135,4 +135,13 @@ interface Bitrix24Service
      * @return array
      */
     public function filterOnline(array $userIds): array;
+
+    /**
+     * Search for leads
+     *
+     * @param array $conditions
+     *
+     * @return array
+     */
+    public function findLeads(array $conditions): array;
 }
