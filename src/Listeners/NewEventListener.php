@@ -12,6 +12,7 @@ use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24SearchLeadSubsyst
 use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24IsUserOnlineSubsystem;
 use professionalweb\IntegrationHub\IntegrationHubCommon\Interfaces\Services\Subsystem;
 use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24UpdateInvoiceSubsystem;
+use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24SearchContactSubsystem;
 use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24ConvertCurrencySubsystem;
 use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24CheckDuplicatesSubsystem;
 use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24LeadDistributionSubsystem;
@@ -25,6 +26,10 @@ class NewEventListener
         /** @var Subsystem $subsystem */
         $subsystem = null;
         switch ($eventToProcess->getProcessOptions()->getSubsystemId()) {
+            case Bitrix24SearchContactSubsystem::BITRIX24_SEARCH_CONTACT:
+                /** @var Bitrix24SearchContactSubsystem $subsystem */
+                $subsystem = app(Bitrix24SearchContactSubsystem::class);
+                break;
             case Bitrix24LeadSubsystem::BITRIX24_LEAD:
                 /** @var Bitrix24LeadSubsystem $subsystem */
                 $subsystem = app(Bitrix24LeadSubsystem::class);

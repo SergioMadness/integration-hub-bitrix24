@@ -320,17 +320,17 @@ class Bitrix24Service implements IBitrix24Service
      */
     public function sendInvoice(array $data): int
     {
-//        if (empty($fields = Cache::get('invoice-fields'))) {
-//            Cache::put('invoice-fields', $fields = $this->call(self::METHOD_INVOICE_FIELDS), 60);
-//        }
-//        if (empty($fields)) {
-//            throw new Bitrix24Exception('Empty fields');
-//        }
-//        $data = $this->prepareData($data, $fields);
-//        $validator = ValidatorFacade::make($data, $this->prepareValidatorRules($fields));
-//        if ($validator->fails()) {
-//            throw new ProcessException('', 0, $validator->errors()->toArray());
-//        }
+        if (empty($fields = Cache::get('invoice-fields'))) {
+            Cache::put('invoice-fields', $fields = $this->call(self::METHOD_INVOICE_FIELDS), 60);
+        }
+        if (empty($fields)) {
+            throw new Bitrix24Exception('Empty fields');
+        }
+        $data = $this->prepareData($data, $fields);
+        $validator = ValidatorFacade::make($data, $this->prepareValidatorRules($fields));
+        if ($validator->fails()) {
+            throw new ProcessException('', 0, $validator->errors()->toArray());
+        }
         $result = $this->call(self::METHOD_ADD_INVOICE, [
             'fields' => $data,
         ]);
@@ -496,28 +496,28 @@ class Bitrix24Service implements IBitrix24Service
 //        return $data;
 //    }
 
-    /**
-     * @param mixed $data
-     * @param array $fieldInfo
-     *
-     * @return mixed
-     */
-    protected function formatField($data, array $fieldInfo)
-    {
-        if ($fieldInfo['type'] === self::TYPE_CRM_MULTIFIELD) {
-            $data = (array)$data;
-            foreach ($data as $key => $value) {
-                if (!\is_array($value)) {
-                    $data[$key] = [
-                        'VALUE'      => $value,
-                        'VALUE_TYPE' => self::MULTIFIELD_DEFAULT_TYPE,
-                    ];
-                }
-            }
-        }
-
-        return $data;
-    }
+//    /**
+//     * @param mixed $data
+//     * @param array $fieldInfo
+//     *
+//     * @return mixed
+//     */
+//    protected function formatField($data, array $fieldInfo)
+//    {
+//        if ($fieldInfo['type'] === self::TYPE_CRM_MULTIFIELD) {
+//            $data = (array)$data;
+//            foreach ($data as $key => $value) {
+//                if (!\is_array($value)) {
+//                    $data[$key] = [
+//                        'VALUE'      => $value,
+//                        'VALUE_TYPE' => self::MULTIFIELD_DEFAULT_TYPE,
+//                    ];
+//                }
+//            }
+//        }
+//
+//        return $data;
+//    }
 
     /**
      * Prepare rules for validator
@@ -776,6 +776,16 @@ class Bitrix24Service implements IBitrix24Service
      * @param int $id
      *
      * @return array
+     * @throws Bitrix24ApiException
+     * @throws Bitrix24EmptyResponseException
+     * @throws Bitrix24Exception
+     * @throws Bitrix24IoException
+     * @throws Bitrix24MethodNotFoundException
+     * @throws Bitrix24PaymentRequiredException
+     * @throws Bitrix24PortalDeletedException
+     * @throws Bitrix24SecurityException
+     * @throws Bitrix24TokenIsInvalidException
+     * @throws Bitrix24WrongClientException
      */
     public function getLead(int $id): array
     {
@@ -788,10 +798,46 @@ class Bitrix24Service implements IBitrix24Service
      * @param array $conditions
      *
      * @return array
+     * @throws Bitrix24ApiException
+     * @throws Bitrix24EmptyResponseException
+     * @throws Bitrix24Exception
+     * @throws Bitrix24IoException
+     * @throws Bitrix24MethodNotFoundException
+     * @throws Bitrix24PaymentRequiredException
+     * @throws Bitrix24PortalDeletedException
+     * @throws Bitrix24SecurityException
+     * @throws Bitrix24TokenIsInvalidException
+     * @throws Bitrix24WrongClientException
      */
     public function findLeads(array $conditions): array
     {
         return $this->call(self::METHOD_FIND_LEAD, [
+            'filter' => $conditions,
+            'order'  => ['DATE_CREATE' => 'DESC'],
+            'select' => ['*'],
+        ]);
+    }
+
+    /**
+     * Search for contacts
+     *
+     * @param array $conditions
+     *
+     * @return array
+     * @throws Bitrix24ApiException
+     * @throws Bitrix24EmptyResponseException
+     * @throws Bitrix24Exception
+     * @throws Bitrix24IoException
+     * @throws Bitrix24MethodNotFoundException
+     * @throws Bitrix24PaymentRequiredException
+     * @throws Bitrix24PortalDeletedException
+     * @throws Bitrix24SecurityException
+     * @throws Bitrix24TokenIsInvalidException
+     * @throws Bitrix24WrongClientException
+     */
+    public function findContacts(array $conditions): array
+    {
+        return $this->call(self::METHOD_CONTACT_SEARCH, [
             'filter' => $conditions,
             'order'  => ['DATE_CREATE' => 'DESC'],
             'select' => ['*'],

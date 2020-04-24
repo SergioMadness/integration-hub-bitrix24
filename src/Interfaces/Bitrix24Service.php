@@ -144,4 +144,13 @@ interface Bitrix24Service
      * @return array
      */
     public function findLeads(array $conditions): array;
+
+    /**
+     * Search for contacts
+     *
+     * @param array $conditions
+     *
+     * @return array
+     */
+    public function findContacts(array $conditions): array;
 }
