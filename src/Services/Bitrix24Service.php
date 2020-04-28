@@ -320,17 +320,17 @@ class Bitrix24Service implements IBitrix24Service
      */
     public function sendInvoice(array $data): int
     {
-        if (empty($fields = Cache::get('invoice-fields'))) {
-            Cache::put('invoice-fields', $fields = $this->call(self::METHOD_INVOICE_FIELDS), 60);
-        }
-        if (empty($fields)) {
-            throw new Bitrix24Exception('Empty fields');
-        }
-        $data = $this->prepareData($data, $fields);
-        $validator = ValidatorFacade::make($data, $this->prepareValidatorRules($fields));
-        if ($validator->fails()) {
-            throw new ProcessException('', 0, $validator->errors()->toArray());
-        }
+//        if (empty($fields = Cache::get('invoice-fields'))) {
+//            Cache::put('invoice-fields', $fields = $this->call(self::METHOD_INVOICE_FIELDS), 60);
+//        }
+//        if (empty($fields)) {
+//            throw new Bitrix24Exception('Empty fields');
+//        }
+////        $data = $this->prepareData($data, $fields);
+//        $validator = ValidatorFacade::make($data, $this->prepareValidatorRules($fields));
+//        if ($validator->fails()) {
+//            throw new ProcessException('', 0, $validator->errors()->toArray());
+//        }
         $result = $this->call(self::METHOD_ADD_INVOICE, [
             'fields' => $data,
         ]);
@@ -841,6 +841,7 @@ class Bitrix24Service implements IBitrix24Service
             'filter' => $conditions,
             'order'  => ['DATE_CREATE' => 'DESC'],
             'select' => ['*'],
+            'limit'  => 1,
         ]);
     }
 }
