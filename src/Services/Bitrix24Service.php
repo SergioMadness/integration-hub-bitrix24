@@ -62,6 +62,8 @@ class Bitrix24Service implements IBitrix24Service
 
     protected const METHOD_CONTACT_SEARCH = 'crm.contact.list';
 
+    protected const METHOD_GET_CONTACT = 'crm.contact.get';
+
     protected const METHOD_LEAD_SEARCH = 'crm.lead.list';
 
     protected const METHOD_CURRENCY_LIST = 'crm.currency.list';
@@ -843,5 +845,27 @@ class Bitrix24Service implements IBitrix24Service
             'select' => ['*'],
             'limit'  => 1,
         ]);
+    }
+
+    /**
+     * Get contact by id
+     *
+     * @param int $id
+     *
+     * @return array
+     * @throws Bitrix24ApiException
+     * @throws Bitrix24EmptyResponseException
+     * @throws Bitrix24Exception
+     * @throws Bitrix24IoException
+     * @throws Bitrix24MethodNotFoundException
+     * @throws Bitrix24PaymentRequiredException
+     * @throws Bitrix24PortalDeletedException
+     * @throws Bitrix24SecurityException
+     * @throws Bitrix24TokenIsInvalidException
+     * @throws Bitrix24WrongClientException
+     */
+    public function getContact(int $id): array
+    {
+        return $this->call(self::METHOD_GET_CONTACT, ['ID' => $id]);
     }
 }

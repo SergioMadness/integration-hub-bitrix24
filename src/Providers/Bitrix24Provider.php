@@ -11,6 +11,7 @@ use professionalweb\IntegrationHub\Bitrix24\Services\Bitrix24GetLeadSubsystem;
 use professionalweb\IntegrationHub\Bitrix24\Services\Bitrix24WorkflowSubsystem;
 use professionalweb\IntegrationHub\Bitrix24\Services\Bitrix24SearchLeadSubsystem;
 use professionalweb\IntegrationHub\Bitrix24\Services\Bitrix24GetInvoiceSubsystem;
+use professionalweb\IntegrationHub\Bitrix24\Services\Bitrix24GetContactSubsystem;
 use professionalweb\IntegrationHub\Bitrix24\Services\Bitrix24IsUserOnlineSubsystem;
 use professionalweb\IntegrationHub\Bitrix24\Services\Bitrix24UpdateInvoiceSubsystem;
 use professionalweb\IntegrationHub\Bitrix24\Services\Bitrix24SearchContactSubsystem;
@@ -30,6 +31,7 @@ use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24InvoiceSubsystem 
 use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24WorkflowSubsystem as IBitrix24WorkflowSubsystem;
 use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24GetInvoiceSubsystem as IBitrix24GetInvoiceSubsystem;
 use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24SearchLeadSubsystem as IBitrix24SearchLeadSubsystem;
+use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24GetContactSubsystem as IBitrix24GetContactSubsystem;
 use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24IsUserOnlineSubsystem as IBitrix24IsUserOnlineSubsystem;
 use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24UpdateInvoiceSubsystem as IBitrix24UpdateInvoiceSubsystem;
 use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24SearchContactSubsystem as IBitrix24SearchContactSubsystem;
@@ -62,6 +64,7 @@ class Bitrix24Provider extends ServiceProvider
         $this->app->bind(IBitrix24ContactSubsystem::class, Bitrix24ContactSubsystem::class);
         $this->app->bind(IBitrix24GetDealSubsystem::class, Bitrix24GetDealSubsystem::class);
         $this->app->bind(IBitrix24WorkflowSubsystem::class, Bitrix24WorkflowSubsystem::class);
+        $this->app->bind(IBitrix24GetContactSubsystem::class, Bitrix24GetContactSubsystem::class);
         $this->app->bind(IBitrix24SearchLeadSubsystem::class, Bitrix24SearchLeadSubsystem::class);
         $this->app->bind(IBitrix24GetInvoiceSubsystem::class, Bitrix24GetInvoiceSubsystem::class);
         $this->app->bind(IBitrix24IsUserOnlineSubsystem::class, Bitrix24IsUserOnlineSubsystem::class);

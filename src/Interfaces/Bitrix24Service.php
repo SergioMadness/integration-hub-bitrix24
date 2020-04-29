@@ -153,4 +153,13 @@ interface Bitrix24Service
      * @return array
      */
     public function findContacts(array $conditions): array;
+
+    /**
+     * Get contact by id
+     *
+     * @param int $id
+     *
+     * @return array
+     */
+    public function getContact(int $id): array;
 }
