@@ -30,9 +30,13 @@ class Bitrix24GetContactSubsystem extends Bitrix24LeadSubsystem implements IBitr
      */
     public function process(EventData $eventData): EventData
     {
-        $id = $eventData->get('id');
+        $id = $eventData->get('ID');
         if (!empty($id)) {
-            $eventData->setData($this->getBitrix24Service()->getContact($id));
+            $eventData->setData(
+                $this->getBitrix24Service()->setSettings(
+                    $this->getProcessOptions()->getOptions()
+                )->getContact($id)
+            );
         }
 
         return $eventData;
