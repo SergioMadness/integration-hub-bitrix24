@@ -64,8 +64,6 @@ class Bitrix24Service implements IBitrix24Service
 
     protected const METHOD_GET_CONTACT = 'crm.contact.get';
 
-    protected const METHOD_LEAD_SEARCH = 'crm.lead.list';
-
     protected const METHOD_CURRENCY_LIST = 'crm.currency.list';
 
     protected const METHOD_GET_USER = 'user.get';
@@ -73,6 +71,8 @@ class Bitrix24Service implements IBitrix24Service
     protected const METHOD_SEARCH_USER = 'user.search';
 
     protected const METHOD_TIMEMAN_STATUS = 'timeman.status';
+
+    protected const METHOD_DEAL_LIST = 'crm.deal.list';
     //</editor-fold>
 
     /**
@@ -814,6 +814,32 @@ class Bitrix24Service implements IBitrix24Service
     public function findLeads(array $conditions): array
     {
         return $this->call(self::METHOD_FIND_LEAD, [
+            'filter' => $conditions,
+            'order'  => ['DATE_CREATE' => 'DESC'],
+            'select' => ['*'],
+        ]);
+    }
+
+    /**
+     * Search for delas
+     *
+     * @param array $conditions
+     *
+     * @return array
+     * @throws Bitrix24ApiException
+     * @throws Bitrix24EmptyResponseException
+     * @throws Bitrix24Exception
+     * @throws Bitrix24IoException
+     * @throws Bitrix24MethodNotFoundException
+     * @throws Bitrix24PaymentRequiredException
+     * @throws Bitrix24PortalDeletedException
+     * @throws Bitrix24SecurityException
+     * @throws Bitrix24TokenIsInvalidException
+     * @throws Bitrix24WrongClientException
+     */
+    public function findDeals(array $conditions): array
+    {
+        return $this->call(self::METHOD_DEAL_LIST, [
             'filter' => $conditions,
             'order'  => ['DATE_CREATE' => 'DESC'],
             'select' => ['*'],

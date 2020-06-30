@@ -6,6 +6,7 @@ use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24GetLeadSubsystem;
 use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24InvoiceSubsystem;
 use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24GetDealSubsystem;
 use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24ContactSubsystem;
+use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24SearchDealSubsystem;
 use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24WorkflowSubsystem;
 use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24GetInvoiceSubsystem;
 use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24SearchLeadSubsystem;
@@ -94,6 +95,10 @@ class NewEventListener
             case Bitrix24GetContactSubsystem::BITRIX24_GET_CONTACT:
                 /** @var Bitrix24GetContactSubsystem $subsystem */
                 $subsystem = app(Bitrix24GetContactSubsystem::class);
+                break;
+            case Bitrix24SearchDealSubsystem::BITRIX24_SEARCH_DEAL:
+                /** @var Bitrix24SearchDealSubsystem $subsystem */
+                $subsystem = app(Bitrix24SearchDealSubsystem::class);
                 break;
         }
 

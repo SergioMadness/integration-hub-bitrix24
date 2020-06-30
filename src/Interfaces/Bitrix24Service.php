@@ -162,4 +162,13 @@ interface Bitrix24Service
      * @return array
      */
     public function getContact(int $id): array;
+
+    /**
+     * Get deal list by conditions
+     *
+     * @param array $conditions
+     *
+     * @return array
+     */
+    public function findDeals(array $conditions): array;
 }
