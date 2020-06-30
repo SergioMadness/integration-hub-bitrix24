@@ -73,6 +73,8 @@ class Bitrix24Service implements IBitrix24Service
     protected const METHOD_TIMEMAN_STATUS = 'timeman.status';
 
     protected const METHOD_DEAL_LIST = 'crm.deal.list';
+
+    protected const METHOD_GET_DEAL_PRODUCTS = 'crm.deal.productrows.get';
     //</editor-fold>
 
     /**
@@ -839,11 +841,27 @@ class Bitrix24Service implements IBitrix24Service
      */
     public function findDeals(array $conditions): array
     {
-        return $this->call(self::METHOD_DEAL_LIST, [
+        $products = (array)($conditions['products'] ?? []);
+
+        unset($conditions['products']);
+
+        $result = $this->call(self::METHOD_DEAL_LIST, [
             'filter' => $conditions,
             'order'  => ['DATE_CREATE' => 'DESC'],
             'select' => ['*'],
         ]);
+
+        if (!empty($products)) {
+            $result = array_filter($result, function ($item) use ($products) {
+                $productsInDeal = $this->call(self::METHOD_GET_DEAL_PRODUCTS, ['id' => $item['ID']]);
+
+                return count(array_filter($productsInDeal, function ($product) use ($products) {
+                        return in_array($product['PRODUCT_ID'], $products);
+                    })) > 0;
+            });
+        }
+
+        return $result;
     }
 
     /**
