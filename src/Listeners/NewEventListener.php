@@ -6,11 +6,12 @@ use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24GetLeadSubsystem;
 use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24InvoiceSubsystem;
 use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24GetDealSubsystem;
 use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24ContactSubsystem;
-use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24SearchDealSubsystem;
 use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24WorkflowSubsystem;
+use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24SearchDealSubsystem;
 use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24GetInvoiceSubsystem;
 use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24SearchLeadSubsystem;
 use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24GetContactSubsystem;
+use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24GetProductSubsystem;
 use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24IsUserOnlineSubsystem;
 use professionalweb\IntegrationHub\IntegrationHubCommon\Interfaces\Services\Subsystem;
 use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24UpdateInvoiceSubsystem;
@@ -99,6 +100,10 @@ class NewEventListener
             case Bitrix24SearchDealSubsystem::BITRIX24_SEARCH_DEAL:
                 /** @var Bitrix24SearchDealSubsystem $subsystem */
                 $subsystem = app(Bitrix24SearchDealSubsystem::class);
+                break;
+            case Bitrix24GetProductSubsystem::BITRIX24_GET_PRODUCT:
+                /** @var Bitrix24GetProductSubsystem $subsystem */
+                $subsystem = app(Bitrix24GetProductSubsystem::class);
                 break;
         }
 

@@ -171,4 +171,13 @@ interface Bitrix24Service
      * @return array
      */
     public function findDeals(array $conditions): array;
+
+    /**
+     * Get product by id
+     *
+     * @param int $id
+     *
+     * @return array
+     */
+    public function getProduct(int $id): array;
 }
