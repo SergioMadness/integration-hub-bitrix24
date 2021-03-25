@@ -36,6 +36,14 @@ interface Bitrix24Service
     public function getLead(int $id): array;
 
     /**
+     * Update lead
+     *
+     * @param int   $id
+     * @param array $data
+     */
+    public function updateLead(int $id, array $data): void;
+
+    /**
      * Send contact to CRM
      *
      * @param array $data

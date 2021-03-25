@@ -34,6 +34,8 @@ class Bitrix24Service implements IBitrix24Service
 
     protected const METHOD_ADD_LEAD = 'crm.lead.add';
 
+    protected const METHOD_UPDATE_LEAD = 'crm.lead.update';
+
     protected const METHOD_GET_LEAD = 'crm.lead.get';
 
     protected const METHOD_FIND_LEAD = 'crm.lead.list';
@@ -796,6 +798,49 @@ class Bitrix24Service implements IBitrix24Service
     public function getLead(int $id): array
     {
         return $this->call(self::METHOD_GET_LEAD, ['id' => $id]);
+    }
+
+    /**
+     * Update lead
+     *
+     * @param int   $id
+     * @param array $data
+     *
+     * @throws Bitrix24ApiException
+     * @throws Bitrix24EmptyResponseException
+     * @throws Bitrix24Exception
+     * @throws Bitrix24IoException
+     * @throws Bitrix24MethodNotFoundException
+     * @throws Bitrix24PaymentRequiredException
+     * @throws Bitrix24PortalDeletedException
+     * @throws Bitrix24SecurityException
+     * @throws Bitrix24TokenIsInvalidException
+     * @throws Bitrix24WrongClientException
+     * @throws ProcessException
+     */
+    public function updateLead(int $id, array $data): void
+    {
+        if (empty($fields = Cache::get('fields'))) {
+            Cache::put('fields', $fields = $this->call(self::METHOD_LEAD_FIELDS), 60);
+        }
+
+        if (empty($fields)) {
+            throw new Bitrix24Exception('Empty fields');
+        }
+
+        $validator = ValidatorFacade::make($data, $this->prepareValidatorRules($fields));
+        if ($validator->fails()) {
+            throw new ProcessException('', 0, $validator->errors()->toArray());
+        }
+
+        $result = $this->call(self::METHOD_UPDATE_LEAD, [
+            'id'     => $id,
+            'fields' => $data,
+        ]);
+
+        if (isset($data['PRODUCTS']) && is_array($data['PRODUCTS'])) {
+            $this->addProductsToLead($id, $data['PRODUCTS']);
+        }
     }
 
     /**
