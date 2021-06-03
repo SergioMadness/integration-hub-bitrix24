@@ -895,7 +895,7 @@ class Bitrix24Service implements IBitrix24Service
         $result = $this->call(self::METHOD_DEAL_LIST, [
             'filter' => $conditions,
             'order'  => ['DATE_CREATE' => 'DESC'],
-            'select' => ['*'],
+            'select' => ['*', 'UF_*'],
         ]);
 
         if (!empty($products)) {
