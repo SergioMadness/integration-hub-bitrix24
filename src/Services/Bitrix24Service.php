@@ -50,6 +50,8 @@ class Bitrix24Service implements IBitrix24Service
 
     protected const METHOD_ADD_DEAL = 'crm.deal.add';
 
+    protected const METHOD_UPDATE_DEAL = 'crm.deal.update';
+
     protected const METHOD_ADD_PRODUCTS_TO_DEAL = 'crm.deal.productrows.set';
 
     protected const METHOD_INVOICE_FIELDS = 'crm.invoice.fields';
@@ -434,6 +436,31 @@ class Bitrix24Service implements IBitrix24Service
         }
 
         return $result[0] ?? 0;
+    }
+
+    /**
+     * Method to update deal
+     *
+     * @param int   $id
+     * @param array $data
+     *
+     * @return bool
+     * @throws Bitrix24ApiException
+     * @throws Bitrix24EmptyResponseException
+     * @throws Bitrix24Exception
+     * @throws Bitrix24IoException
+     * @throws Bitrix24MethodNotFoundException
+     * @throws Bitrix24PaymentRequiredException
+     * @throws Bitrix24PortalDeletedException
+     * @throws Bitrix24SecurityException
+     * @throws Bitrix24TokenIsInvalidException
+     * @throws Bitrix24WrongClientException
+     */
+    public function updateDeal(int $id, array $data): bool
+    {
+        $this->call(self::METHOD_UPDATE_DEAL, ['id' => $id, 'fields' => $data]);
+
+        return true;
     }
 
     /**

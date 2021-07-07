@@ -89,6 +89,16 @@ interface Bitrix24Service
     public function getDeal(int $id): array;
 
     /**
+     * Update deal
+     *
+     * @param int   $id
+     * @param array $data
+     *
+     * @return int
+     */
+    public function updateDeal(int $id, array $data): bool;
+
+    /**
      * Update invoice
      *
      * @param int   $id

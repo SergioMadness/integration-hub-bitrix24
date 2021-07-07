@@ -13,6 +13,7 @@ use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24SearchLeadSubsyst
 use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24GetContactSubsystem;
 use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24GetProductSubsystem;
 use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24UpdateLeadSubsystem;
+use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24UpdateDealSubsystem;
 use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24IsUserOnlineSubsystem;
 use professionalweb\IntegrationHub\IntegrationHubCommon\Interfaces\Services\Subsystem;
 use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24UpdateInvoiceSubsystem;
@@ -109,6 +110,10 @@ class NewEventListener
             case Bitrix24UpdateLeadSubsystem::BITRIX24_UPDATE_LEAD:
                 /** @var Bitrix24UpdateLeadSubsystem $subsystem */
                 $subsystem = app(Bitrix24UpdateLeadSubsystem::class);
+                break;
+            case Bitrix24UpdateDealSubsystem::BITRIX24_UPDATE_DEAL:
+                /** @var Bitrix24UpdateDealSubsystem $subsystem */
+                $subsystem = app(Bitrix24UpdateDealSubsystem::class);
                 break;
         }
 
