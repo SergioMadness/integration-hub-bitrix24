@@ -1,8 +1,8 @@
-<?php namespace professionalweb\IntegrationHub\Bitrix24\Bitrix24LeadDistribution\Interfaces;
+<?php namespace professionalweb\IntegrationHub\Bitrix24\Interfaces;
 
 /**
  * Interface for distribution service
- * @package professionalweb\IntegrationHub\Bitrix24\Bitrix24LeadDistribution\Interfaces
+ * @package professionalweb\IntegrationHub\Bitrix24\Interfaces
  */
 interface DistributionService
 {

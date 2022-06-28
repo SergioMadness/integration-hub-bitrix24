@@ -1,11 +1,11 @@
-<?php namespace professionalweb\IntegrationHub\Bitrix24\Bitrix24LeadDistribution\Services;
+<?php namespace professionalweb\IntegrationHub\Bitrix24\Services;
 
 use professionalweb\IntegrationHub\Bitrix24\Bitrix24LeadDistribution\Interfaces\DistributionAlgorithm;
 use professionalweb\IntegrationHub\Bitrix24\Bitrix24LeadDistribution\Interfaces\DistributionService as IDistributionService;
 
 /**
  * Service to distribute leads between users
- * @package professionalweb\IntegrationHub\DrivBitrix24ers\Bitrix24LeadDistribution\Services
+ * @package professionalweb\IntegrationHub\Bitrix24\Services
  */
 class DistributionService implements IDistributionService
 {
