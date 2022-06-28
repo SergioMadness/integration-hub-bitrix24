@@ -22,7 +22,7 @@
   "minimum-stability": "dev",
   "prefer-stable": true,
   "require": {
-    "php": ">=7.1.3",
+    "php": ">=7.4",
     "professionalweb/integration-hub-common": "*",
     "mesilov/bitrix24-php-sdk": "*"
   },
