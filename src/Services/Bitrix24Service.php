@@ -86,34 +86,34 @@ class Bitrix24Service implements IBitrix24Service
     /**
      * @var string
      */
-    private $url;
+    private string $url;
 
     /**
      * @var array
      */
-    private $scope = ['crm'];
+    private array $scope = ['crm'];
 
     /**
      * @var Bitrix24
      */
-    private $client;
+    private Bitrix24 $client;
 
     /**
      * Hook
      *
      * @var string
      */
-    private $hook;
+    private string $hook;
 
     /**
      * @var array
      */
-    private $rawSettings = [];
+    private array $rawSettings = [];
 
     /**
      * @var bool
      */
-    private $lastRequestSuccessful;
+    private bool $lastRequestSuccessful;
 
     public function __construct(string $url = '', array $scope = ['crm'])
     {

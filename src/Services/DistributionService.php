@@ -13,7 +13,7 @@ class DistributionService implements IDistributionService
     /**
      * @var DistributionAlgorithm
      */
-    private $algorithm;
+    private DistributionAlgorithm $algorithm;
 
     /**
      * Set selected algorithm

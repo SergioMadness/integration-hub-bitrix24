@@ -13,12 +13,12 @@ class Bitrix24LeadSubsystem implements IBitrix24LeadSubsystem
     /**
      * @var Bitrix24Service
      */
-    private $bitrix24Service;
+    private Bitrix24Service $bitrix24Service;
 
     /**
      * @var ProcessOptions
      */
-    private $processOptions;
+    private ProcessOptions $processOptions;
 
     public function __construct(Bitrix24Service $bitrix24Service)
     {

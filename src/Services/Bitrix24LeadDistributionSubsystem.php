@@ -19,22 +19,22 @@ class Bitrix24LeadDistributionSubsystem implements IBitrix24LeadDistributionSubs
     /**
      * @var ProcessOptions
      */
-    private $processOptions;
+    private ProcessOptions $processOptions;
 
     /**
      * @var DistributionService
      */
-    private $distributionService;
+    private DistributionService $distributionService;
 
     /**
      * @var Bitrix24Service
      */
-    private $bitrix24Service;
+    private Bitrix24Service $bitrix24Service;
 
     /**
      * @var Filter
      */
-    private $filter;
+    private Filter $filter;
 
 
     public function __construct(DistributionService $distributionService, Bitrix24Service $bitrix24Service, Filter $filter)
