@@ -8,21 +8,12 @@
     "hub",
     "bitrix24"
   ],
-  "repositories": [
-    {
-      "type": "path",
-      "url": "/home/user1/projects/php/integration-hub-common",
-      "options": {
-        "symlink": true
-      }
-    }
-  ],
   "license": "MIT",
   "type": "library",
   "minimum-stability": "dev",
   "prefer-stable": true,
   "require": {
-    "php": ">=7.4",
+    "php": ">=8.4",
     "professionalweb/integration-hub-common": "*",
     "mesilov/bitrix24-php-sdk": "*"
   },

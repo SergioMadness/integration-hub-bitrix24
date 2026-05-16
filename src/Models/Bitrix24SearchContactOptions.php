@@ -1,4 +1,8 @@
-<?php namespace professionalweb\IntegrationHub\Bitrix24\Models;
+<?php
+
+declare(strict_types=1);
+
+namespace professionalweb\IntegrationHub\Bitrix24\Models;
 
 /**
  * Search contact subsystem options
@@ -9,8 +13,6 @@ class Bitrix24SearchContactOptions extends Bitrix24ContactOptions
 
     /**
      * Get available fields for mapping
-     *
-     * @return array
      */
     public function getAvailableFields(): array
     {

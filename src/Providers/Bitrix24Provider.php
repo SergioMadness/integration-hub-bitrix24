@@ -1,4 +1,8 @@
-<?php namespace professionalweb\IntegrationHub\Bitrix24\Providers;
+<?php
+
+declare(strict_types=1);
+
+namespace professionalweb\IntegrationHub\Bitrix24\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use professionalweb\IntegrationHub\Bitrix24\Services\Bitrix24Service;
@@ -72,7 +76,7 @@ class Bitrix24Provider extends ServiceProvider
 {
     public function boot(): void
     {
-        $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'IntegrationHubBitrix24');
+        $this->loadTranslationsFrom(__DIR__ . '/../resources/lang', 'IntegrationHubBitrix24');
 
         $this->app->booted(static function () {
             /** @var SubsystemPool $pool */
@@ -105,7 +109,7 @@ class Bitrix24Provider extends ServiceProvider
     {
         $this->app->register(EventServiceProvider::class);
 
-        $this->app->singleton(IDistributionService::class, function () {
+        $this->app->singleton(IDistributionService::class, static function () {
             return (new DistributionService())->setAlgorithm(new RoundRobin());
         });
 

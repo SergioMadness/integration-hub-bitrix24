@@ -1,5 +1,10 @@
-<?php namespace professionalweb\IntegrationHub\Bitrix24\Algorithms;
+<?php
 
+declare(strict_types=1);
+
+namespace professionalweb\IntegrationHub\Bitrix24\Algorithms;
+
+use Log;
 use Illuminate\Support\Facades\Cache;
 use professionalweb\IntegrationHub\Bitrix24\Interfaces\DistributionAlgorithm;
 
@@ -10,47 +15,7 @@ use professionalweb\IntegrationHub\Bitrix24\Interfaces\DistributionAlgorithm;
 class RoundRobin implements DistributionAlgorithm
 {
     /**
-     * Get map user->leadQty
-     *
-     * @param string $key
-     *
-     * @return array
-     */
-    protected function getMap(string $key): array
-    {
-        $map = Cache::get('rr_map_' . $key, [
-            'values' => [],
-            'date'   => date('d.m.Y'),
-        ]);
-        if ($map['date'] !== date('d.m.Y')) {
-            $map['values'] = [];
-        }
-
-        return $map['values'];
-    }
-
-    /**
-     * Remember map
-     *
-     * @param string $key
-     * @param array  $map
-     *
-     * @return RoundRobin
-     */
-    protected function setMap(string $key, array $map): self
-    {
-        Cache::forever('rr_map_' . $key, [
-            'values' => $map,
-            'date'   => date('d.m.Y'),
-        ]);
-
-        return $this;
-    }
-
-    /**
      * Get user id
-     *
-     * @param array  $ids
      *
      * @param string $group
      *
@@ -61,7 +26,7 @@ class RoundRobin implements DistributionAlgorithm
         $key = $group ?? md5(implode('', array_sort($ids)));
         $map = $this->getMap($key);
 
-        \Log::info('Map: ' . $key, $map);
+        Log::info('Map: ' . $key, $map);
 
         $result = null;
         $minQty = null;
@@ -83,8 +48,39 @@ class RoundRobin implements DistributionAlgorithm
         }
 
         $this->setMap($key, $map);
-        \Log::info('Set map: ' . $key, $map);
+        Log::info('Set map: ' . $key, $map);
 
         return $result;
+    }
+
+    /**
+     * Get map user->leadQty
+     */
+    protected function getMap(string $key): array
+    {
+        $map = Cache::get('rr_map_' . $key, [
+            'values' => [],
+            'date' => date('d.m.Y'),
+        ]);
+        if ($map['date'] !== date('d.m.Y')) {
+            $map['values'] = [];
+        }
+
+        return $map['values'];
+    }
+
+    /**
+     * Remember map
+     *
+     * @return RoundRobin
+     */
+    protected function setMap(string $key, array $map): self
+    {
+        Cache::forever('rr_map_' . $key, [
+            'values' => $map,
+            'date' => date('d.m.Y'),
+        ]);
+
+        return $this;
     }
 }

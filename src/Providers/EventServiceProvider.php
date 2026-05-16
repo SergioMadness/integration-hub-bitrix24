@@ -1,4 +1,8 @@
-<?php namespace professionalweb\IntegrationHub\Bitrix24\Providers;
+<?php
+
+declare(strict_types=1);
+
+namespace professionalweb\IntegrationHub\Bitrix24\Providers;
 
 use professionalweb\IntegrationHub\Bitrix24\Listeners\NewEventListener;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;

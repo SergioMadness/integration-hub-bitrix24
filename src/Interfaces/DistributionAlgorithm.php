@@ -1,4 +1,8 @@
-<?php namespace professionalweb\IntegrationHub\Bitrix24\Interfaces;
+<?php
+
+declare(strict_types=1);
+
+namespace professionalweb\IntegrationHub\Bitrix24\Interfaces;
 
 /**
  * Interface for distribution algorithms
@@ -9,7 +13,6 @@ interface DistributionAlgorithm
     /**
      * Get user id
      *
-     * @param array  $ids
      * @param string $group
      *
      * @return mixed

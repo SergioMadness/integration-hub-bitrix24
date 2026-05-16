@@ -1,4 +1,8 @@
-<?php namespace professionalweb\IntegrationHub\Bitrix24\Listeners;
+<?php
+
+declare(strict_types=1);
+
+namespace professionalweb\IntegrationHub\Bitrix24\Listeners;
 
 use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24DealSubsystem;
 use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24LeadSubsystem;

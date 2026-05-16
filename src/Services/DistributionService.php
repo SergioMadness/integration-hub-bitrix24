@@ -1,4 +1,8 @@
-<?php namespace professionalweb\IntegrationHub\Bitrix24\Services;
+<?php
+
+declare(strict_types=1);
+
+namespace professionalweb\IntegrationHub\Bitrix24\Services;
 
 use professionalweb\IntegrationHub\Bitrix24\Bitrix24LeadDistribution\Interfaces\DistributionAlgorithm;
 use professionalweb\IntegrationHub\Bitrix24\Bitrix24LeadDistribution\Interfaces\DistributionService as IDistributionService;
@@ -10,23 +14,22 @@ use professionalweb\IntegrationHub\Bitrix24\Bitrix24LeadDistribution\Interfaces\
 class DistributionService implements IDistributionService
 {
 
-    /**
-     * @var DistributionAlgorithm
-     */
     private DistributionAlgorithm $algorithm;
 
     /**
-     * Set selected algorithm
+     * Get user id
      *
-     * @param DistributionAlgorithm $algorithm
+     * @param string|null $group
      *
-     * @return DistributionService
+     * @return mixed
      */
-    public function setAlgorithm(DistributionAlgorithm $algorithm): self
+    public function getUserId(array $users, string $group = null)
     {
-        $this->algorithm = $algorithm;
+        if (($alg = $this->getAlgorithm()) !== null) {
+            return $alg->getUserId($users, $group);
+        }
 
-        return $this;
+        return null;
     }
 
     /**
@@ -40,20 +43,14 @@ class DistributionService implements IDistributionService
     }
 
     /**
-     * Get user id
+     * Set selected algorithm
      *
-     * @param array       $users
-     *
-     * @param string|null $group
-     *
-     * @return mixed
+     * @return DistributionService
      */
-    public function getUserId(array $users, string $group = null)
+    public function setAlgorithm(DistributionAlgorithm $algorithm): self
     {
-        if (($alg = $this->getAlgorithm()) !== null) {
-            return $alg->getUserId($users, $group);
-        }
+        $this->algorithm = $algorithm;
 
-        return null;
+        return $this;
     }
 }

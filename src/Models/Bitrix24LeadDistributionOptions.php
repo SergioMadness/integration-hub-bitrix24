@@ -1,4 +1,8 @@
-<?php namespace professionalweb\IntegrationHub\Bitrix24\Models;
+<?php
+
+declare(strict_types=1);
+
+namespace professionalweb\IntegrationHub\Bitrix24\Models;
 
 /**
  * Subsystem options
@@ -9,8 +13,6 @@ class Bitrix24LeadDistributionOptions extends Bitrix24LeadOptions
 
     /**
      * Get available fields for mapping
-     *
-     * @return array
      */
     public function getAvailableFields(): array
     {
@@ -21,21 +23,19 @@ class Bitrix24LeadDistributionOptions extends Bitrix24LeadOptions
 
     /**
      * Get service settings
-     *
-     * @return array
      */
     public function getOptions(): array
     {
         return [
-            'url'         => [
+            'url' => [
                 'name' => 'Домен',
                 'type' => 'string',
             ],
-            'hook'        => [
+            'hook' => [
                 'name' => 'Hook',
                 'type' => 'string',
             ],
-            'filter'      => [
+            'filter' => [
                 'name' => 'Настройки фильтра',
                 'type' => 'array',
             ],
@@ -48,8 +48,6 @@ class Bitrix24LeadDistributionOptions extends Bitrix24LeadOptions
 
     /**
      * Get array fields, that subsystem generates
-     *
-     * @return array
      */
     public function getAvailableOutFields(): array
     {

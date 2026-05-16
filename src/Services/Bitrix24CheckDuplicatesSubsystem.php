@@ -1,4 +1,8 @@
-<?php namespace professionalweb\IntegrationHub\Bitrix24\Services;
+<?php
+
+declare(strict_types=1);
+
+namespace professionalweb\IntegrationHub\Bitrix24\Services;
 
 use professionalweb\IntegrationHub\Bitrix24\Interfaces\Bitrix24Service;
 use professionalweb\IntegrationHub\IntegrationHubCommon\Interfaces\EventData;
@@ -15,8 +19,6 @@ class Bitrix24CheckDuplicatesSubsystem extends Bitrix24LeadSubsystem implements 
 
     /**
      * Get available options
-     *
-     * @return SubsystemOptions
      */
     public function getAvailableOptions(): SubsystemOptions
     {
@@ -25,10 +27,6 @@ class Bitrix24CheckDuplicatesSubsystem extends Bitrix24LeadSubsystem implements 
 
     /**
      * Process event data
-     *
-     * @param EventData $eventData
-     *
-     * @return EventData
      */
     public function process(EventData $eventData): EventData
     {

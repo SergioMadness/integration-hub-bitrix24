@@ -1,12 +1,14 @@
-<?php namespace professionalweb\IntegrationHub\Bitrix24\Models;
+<?php
+
+declare(strict_types=1);
+
+namespace professionalweb\IntegrationHub\Bitrix24\Models;
 
 class Bitrix24StartWorkflowOptions extends Bitrix24LeadOptions
 {
 
     /**
      * Get available fields for mapping
-     *
-     * @return array
      */
     public function getAvailableFields(): array
     {
@@ -19,8 +21,6 @@ class Bitrix24StartWorkflowOptions extends Bitrix24LeadOptions
 
     /**
      * Get service settings
-     *
-     * @return array
      */
     public function getOptions(): array
     {
@@ -36,8 +36,6 @@ class Bitrix24StartWorkflowOptions extends Bitrix24LeadOptions
 
     /**
      * Get array fields, that subsystem generates
-     *
-     * @return array
      */
     public function getAvailableOutFields(): array
     {

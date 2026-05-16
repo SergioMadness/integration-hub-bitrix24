@@ -1,4 +1,8 @@
-<?php namespace professionalweb\IntegrationHub\Bitrix24\Models;
+<?php
+
+declare(strict_types=1);
+
+namespace professionalweb\IntegrationHub\Bitrix24\Models;
 
 class Bitrix24InvoiceOptions extends Bitrix24LeadOptions
 {
@@ -35,8 +39,6 @@ class Bitrix24InvoiceOptions extends Bitrix24LeadOptions
 //    }
     /**
      * Get array fields, that subsystem generates
-     *
-     * @return array
      */
     public function getAvailableOutFields(): array
     {

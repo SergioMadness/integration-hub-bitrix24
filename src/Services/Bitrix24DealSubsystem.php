@@ -1,4 +1,8 @@
-<?php namespace professionalweb\IntegrationHub\Bitrix24\Services;
+<?php
+
+declare(strict_types=1);
+
+namespace professionalweb\IntegrationHub\Bitrix24\Services;
 
 use professionalweb\IntegrationHub\Bitrix24\Models\Bitrix24DealOptions;
 use professionalweb\IntegrationHub\IntegrationHubCommon\Interfaces\EventData;
@@ -9,8 +13,6 @@ class Bitrix24DealSubsystem extends Bitrix24LeadSubsystem implements IBitrix24De
 {
     /**
      * Get available options
-     *
-     * @return SubsystemOptions
      */
     public function getAvailableOptions(): SubsystemOptions
     {
@@ -19,10 +21,6 @@ class Bitrix24DealSubsystem extends Bitrix24LeadSubsystem implements IBitrix24De
 
     /**
      * Process event data
-     *
-     * @param EventData $eventData
-     *
-     * @return EventData
      */
     public function process(EventData $eventData): EventData
     {
